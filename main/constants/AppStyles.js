@@ -1,8 +1,8 @@
 const AppStyles = {
     color: {
-        background: '#ffffff',
+        background: '#f2f2f5',
         accent: '#1ba3ac',
-        primary: '#f2f2f5',
+        primary: '#ffffff',
     },
 }
 export default AppStyles

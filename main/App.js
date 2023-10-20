@@ -21,6 +21,7 @@ export default function App() {
           name="Register"
           component={RegisterPage} />
         <Stack.Screen
+          options={{ headerShown: false }}
           name="Home"
           component={HomePage} />
       </Stack.Navigator>

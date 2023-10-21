@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, SafeAreaView, Image } from 'react-native'
+import { StyleSheet, Text, View, SafeAreaView, Image, TouchableOpacity } from 'react-native'
 import { useNavigation } from '@react-navigation/core'
 import React from 'react'
 import AppStyles from '../constants/AppStyles'
@@ -37,6 +37,12 @@ const HomePage = () => {
                                 >Smart Grocers Inc.</Text>
                             </View>
                             <DrawerItemList {...props} />
+                            <View style={styles.logout}>
+                                <TouchableOpacity style={{ marginTop: 20 }} onPress={() => navigation.replace("Login")}>
+                                    <Text style={{ fontSize: 16, fontWeight: 'bold' }}>Logout</Text>
+                                </TouchableOpacity>
+                            </View>
+
                         </SafeAreaView>
                     )
                 }
@@ -139,7 +145,8 @@ const styles = StyleSheet.create({
         fontSize: 16,
         color: "#111"
     },
-
-
-
+    logout:{
+        marginTop: 100,
+        marginLeft: 20,
+    }
 })

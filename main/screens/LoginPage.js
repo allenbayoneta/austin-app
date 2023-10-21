@@ -2,8 +2,9 @@ import { useNavigation } from '@react-navigation/core'
 import { KeyboardAvoidingView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
 import React from 'react'
 import AppStyles from '../constants/AppStyles'
-//import { auth } from '../firebase'
+import { auth } from '../src/firebase'
 import { useState } from 'react'
+import { signInWithEmailAndPassword } from 'firebase/auth'; 
 
 
 const LoginPage = () => {
@@ -12,13 +13,13 @@ const LoginPage = () => {
   const navigation = useNavigation()
 
   const handleLogin = () => {
-    // auth
-    //   .signInWithEmailAndPassword(email, password)
-    //   .then(userCredentials => {
-    //     const user = userCredentials.user;
-    //     console.log('Logged in with:', user.email);
-    //   })
-    //   .catch(error => alert(error.message))
+    
+    signInWithEmailAndPassword(auth, email, password)
+    .then(userCredentials => {
+      const user = userCredentials.user;
+      console.log('Logged in with:', user.email);
+    })
+    .catch(error => alert(error.message));
     console.log(`Email: ${email}, Password: ${password}`)
     navigation.replace("Home")
   }

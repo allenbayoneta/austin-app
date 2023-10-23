@@ -97,7 +97,7 @@ const styles = StyleSheet.create({
     alignItems: 'flex-start',
     padding: '0px',
     boxSizing: 'border-box',
-    left: '9px',
+    left: '10px',
     top: '6px',
     borderRadius: 15,
   },

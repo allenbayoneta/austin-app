@@ -1,28 +1,50 @@
 import { useNavigation } from '@react-navigation/core'
 import { KeyboardAvoidingView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
-import React from 'react'
+import React, { useState } from 'react'
 import AppStyles from '../constants/AppStyles'
 import { auth } from '../src/firebase'
-import { useState } from 'react'
-import { signInWithEmailAndPassword, createUserWithEmailAndPassword } from 'firebase/auth';
-
+import { createUserWithEmailAndPassword } from 'firebase/auth';
 
 const RegisterPage = () => {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [rePassword, setRePassword] = useState('')
+  const [passwordMismatch, setPasswordMismatch] = useState(false);
+  const [emailError, setEmailError] = useState(''); // State for email validation error
   const navigation = useNavigation()
 
-  const handleLogin = () => {
+  const validateEmail = (email) => {
 
+    const emailRegex = /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,4}$/;
+    return emailRegex.test(email);
+  }
+
+  const handleLogin = () => {
+    // Validate email format
+    if (!validateEmail(email)) {
+      setEmailError('Invalid email format');
+      return;
+    }
+
+    if (password !== rePassword) {
+      setPasswordMismatch(true);
+      setEmailError(''); // Reset email error
+      return;
+    }
+  
     createUserWithEmailAndPassword(auth, email, password)
       .then(userCredentials => {
         const user = userCredentials.user;
         console.log('Logged in with:', user.email);
       })
-      .catch(error => alert(error.message));
-    console.log(`Email: ${email}, Password: ${password}`)
-    navigation.replace("Home")
+      .catch(error => {
+        console.log(`Register Failed: ${error.message}`);
+        setPasswordMismatch(false);
+        setEmailError(''); // Reset email error
+      });
+  
+    console.log(`Email: ${email}, Password: ${password}`);
+    navigation.replace("Home");
   }
 
   return (
@@ -36,9 +58,18 @@ const RegisterPage = () => {
         <TextInput
           placeholder="Email"
           value={email}
-          onChangeText={text => setEmail(text)}
-          style={styles.input}
+          onChangeText={text => {
+            setEmail(text);
+            setEmailError(''); // Reset email error when typing
+          }}
+          style={[
+            styles.input,
+            emailError && styles.inputError // Apply the error style when there's an email error
+          ]}
         />
+        {emailError ? (
+          <Text style={styles.errorText}>{emailError}</Text>
+        ) : null}
         <TextInput
           placeholder="Enter Password"
           value={password}
@@ -50,9 +81,15 @@ const RegisterPage = () => {
           placeholder="Re-enter Password"
           value={rePassword}
           onChangeText={text => setRePassword(text)}
-          style={styles.input}
+          style={[
+            styles.input,
+            passwordMismatch && styles.inputError
+          ]}
           secureTextEntry
         />
+        {passwordMismatch && (
+          <Text style={styles.errorText}>Password don't match</Text>
+        )}
       </View>
 
       <View style={styles.loginContainer}>
@@ -97,6 +134,12 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     marginTop: 10,
   },
+  errorText: {
+    color: 'red',
+    fontSize: 14,
+    marginTop: 5,
+    paddingLeft:10,
+  },
   loginContainer: {
     width: '50%',
     justifyContent: 'center',
@@ -117,7 +160,7 @@ const styles = StyleSheet.create({
   },
   text: {
     fontSize: 14,
-    marginRight: 5
+    marginRight: 5,
   },
   registerContainer: {
     flexDirection: 'row',
@@ -129,4 +172,8 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     fontSize: 14,
   },
-})
+  inputError: {
+    borderColor: 'red',
+    borderWidth: 1,
+  },
+});

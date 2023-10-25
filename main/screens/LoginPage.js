@@ -97,7 +97,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingVertical: 10,
     borderRadius: 10,
-    marginTop: 10,
+    marginTop: 11,
   },
   errorText: {
     color: 'red',

@@ -26,8 +26,8 @@ const DashboardPage = () => {
               selectedValue={period}
               onValueChange={handleValueChange}>
               <Picker.Item label="Weekly" value="week" />  /*Dropdown labels*/
-              <Picker.Item label="Monthly" value="month" />
-              <Picker.Item label="Yearly" value="year" />
+              <Picker.Item label="Monthly" value="month" /> /*Dropdown labels*/
+              <Picker.Item label="Yearly" value="year" /> /*Dropdown labels*/git 
             </Picker>
           </View>
 

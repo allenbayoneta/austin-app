@@ -1,12 +1,15 @@
 import { useNavigation } from '@react-navigation/core'
 import { StyleSheet, Text, View, TouchableOpacity } from 'react-native'
-import React from 'react'
+import React, { useState } from 'react'
 import AppStyles from '../../constants/AppStyles'
+import { Picker } from '@react-native-picker/picker'
 
 
 const DashboardPage = () => {
 
   const navigation = useNavigation()
+  const [period, setPeriod] = useState()
+  const handleValueChange=(itemValue, itemIndex) =>setPeriod(itemValue)
 
   return (
     <View style={styles.container}>
@@ -17,8 +20,13 @@ const DashboardPage = () => {
 
           <View><Text style={styles.ov2}>Overview</Text></View>
 
-          <View><Text style={styles.ov3}>Dropdown</Text></View>
-
+          <View>
+            <Picker style={styles.picker} selectedValue={period} onValueChange={handleValueChange}>
+              <Picker.Item label='Weekly' value="weekly" />
+              <Picker.Item label='Monthly' value="monthly" />
+              <Picker.Item label='Yearly' value="yearly" />
+            </Picker>
+          </View>
         </View>
 
         <View style={styles.supergraph}>
@@ -73,12 +81,13 @@ const styles = StyleSheet.create({
   
 
   },
-  ov3: {
-    fontSize: 15,
-    fontWeight: 'bold',
-    borderWidth: 3,
-    
-
+  picker: {
+    paddingHorizontal: '10px',
+    width: '100%',
+    color: 'black',
+    borderColor: 'black',
+    borderWidth: '2px',
+    borderRadius: '5px',
   },
   supergraph: {
     paddingVertical: '100px',

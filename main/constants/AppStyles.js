@@ -1,7 +1,7 @@
 const AppStyles = {
     color: {
         background: '#f2f2f5',
-        accent: '#1ba3ac',
+        accent: '#c93756',
         primary: '#ffffff',
     },
 }

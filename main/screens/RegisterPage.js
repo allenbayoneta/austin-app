@@ -19,7 +19,7 @@ const RegisterPage = () => {
     return emailRegex.test(email);
   }
 
-  const handleLogin = () => {
+  const handleRegister = () => {
     // Validate email format
     if (!validateEmail(email)) {
       setEmailError('Invalid email format');
@@ -36,6 +36,7 @@ const RegisterPage = () => {
       .then(userCredentials => {
         const user = userCredentials.user;
         console.log('Logged in with:', user.email);
+        navigation.replace("Account");
       })
       .catch(error => {
         console.log(`Register Failed: ${error.message}`);
@@ -44,7 +45,7 @@ const RegisterPage = () => {
       });
   
     console.log(`Email: ${email}, Password: ${password}`);
-    navigation.replace("Home");
+    
   }
 
   return (
@@ -94,7 +95,7 @@ const RegisterPage = () => {
 
       <View style={styles.loginContainer}>
         <TouchableOpacity
-          onPress={handleLogin}
+          onPress={handleRegister}
           style={styles.button}
         >
           <Text style={styles.buttonText}>Register</Text>

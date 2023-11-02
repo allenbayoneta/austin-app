@@ -1,6 +1,6 @@
 import { StyleSheet, Text, View, SafeAreaView, Image, TouchableOpacity } from 'react-native'
+import React, { useState, useEffect } from 'react';
 import { useNavigation } from '@react-navigation/core'
-import React from 'react'
 import AppStyles from '../constants/AppStyles'
 import Icon from '../assets/icon.png'
 import DashboardPage from './drawer/Dashboard'
@@ -10,6 +10,8 @@ import SettingsPage from './drawer/Settings'
 import 'react-native-gesture-handler'
 import { DrawerItemList, createDrawerNavigator } from "@react-navigation/drawer";
 import { SimpleLineIcons, MaterialIcons } from "@expo/vector-icons";
+import { auth, database } from '../src/firebase';
+import { ref, get } from 'firebase/database';
 
 
 const Drawer = createDrawerNavigator();
@@ -17,6 +19,33 @@ const Drawer = createDrawerNavigator();
 const HomePage = () => {
 
     const navigation = useNavigation()
+    const [userData, setUserData] = useState(null);
+
+    useEffect(() => {
+        const user = auth.currentUser;
+        if (user) {
+            const userRef = ref(database, 'users/' + user.uid);
+            get(userRef)
+                .then((snapshot) => {
+                    if (snapshot.exists()) {
+                        const userData = snapshot.val();
+                        setUserData(userData);
+                    }
+                })
+                .catch((error) => {
+                    console.error('Error fetching user data:', error);
+                });
+        }
+    }, []);
+
+    const handleLogout = async () => {
+        try {
+            await auth.signOut(); // Sign out the user from Firebase
+            navigation.replace('Login');
+        } catch (error) {
+            console.error('Error logging out:', error);
+        }
+    };
 
     return (
         <Drawer.Navigator
@@ -29,16 +58,16 @@ const HomePage = () => {
                                     source={Icon}
                                     style={styles.profilePic}
                                 />
-                                <Text style={styles.username}>
-                                    Bhenjie Cabario
-                                </Text>
-                                <Text
-                                    style={styles.company}
-                                >Smart Grocers Inc.</Text>
+                                {userData ? (
+                                    <>
+                                        <Text style={styles.username}>{userData.firstName} {userData.lastName}</Text>
+                                        <Text style={styles.company}>{userData.companyName}</Text>
+                                    </>
+                                ) : null}
                             </View>
                             <DrawerItemList {...props} />
                             <View style={styles.logout}>
-                                <TouchableOpacity style={{ marginTop: 20 }} onPress={() => navigation.replace("Login")}>
+                                <TouchableOpacity style={{ marginTop: 20 }} onPress={handleLogout}>
                                     <Text style={{ fontSize: 16, fontWeight: 'bold' }}>Logout</Text>
                                 </TouchableOpacity>
                             </View>
@@ -145,7 +174,7 @@ const styles = StyleSheet.create({
         fontSize: 16,
         color: "#111"
     },
-    logout:{
+    logout: {
         marginTop: 100,
         marginLeft: 20,
     }

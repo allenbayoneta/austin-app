@@ -1,10 +1,10 @@
 import { StyleSheet } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import AppStyles from './constants/AppStyles';
 import LoginPage from './screens/LoginPage';
 import RegisterPage from './screens/RegisterPage';
 import HomePage from './screens/HomePage';
+import AccountPage from './screens/AccountPage';
 
 const Stack = createNativeStackNavigator();
 
@@ -20,6 +20,10 @@ export default function App() {
           options={{ headerShown: false }}
           name="Register"
           component={RegisterPage} />
+        <Stack.Screen
+          options={{ headerShown: false }}
+          name="Account"
+          component={AccountPage} />
         <Stack.Screen
           options={{ headerShown: false }}
           name="Home"

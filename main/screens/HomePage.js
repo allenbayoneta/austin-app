@@ -4,8 +4,11 @@ import { useNavigation } from '@react-navigation/core'
 import AppStyles from '../constants/AppStyles'
 import Icon from '../assets/icon.png'
 import DashboardPage from './drawer/Dashboard'
-import CalendarPage from './drawer/Calendar'
+import ExpensesPage from './drawer/Expenses'
+import IncomePage from './drawer/Income'
 import OperationsPage from './drawer/Operations'
+import TransactionPage from './drawer/ViewTransac'
+import ForecastPage from './drawer/Forecast'
 import SettingsPage from './drawer/Settings'
 import 'react-native-gesture-handler'
 import { DrawerItemList, createDrawerNavigator } from "@react-navigation/drawer";
@@ -105,26 +108,48 @@ const HomePage = () => {
                 component={DashboardPage}
             />
             <Drawer.Screen
-                name="Operations"
+                name="View Transaction"
                 options={{
-                    drawerLabel: "Operations",
-                    title: "Operations",
+                    drawerLabel: "View Transaction",
+                    title: "View Transaction",
                     drawerIcon: () => (
-                        <MaterialIcons name="dashboard-customize" size={20} color="#808080" />
+                        <MaterialIcons name="poll" size={20} color="#808080" />
                     )
                 }}
-                component={OperationsPage}
+                component={TransactionPage}
             />
             <Drawer.Screen
-                name="Calendar"
+                name="Expenses"
                 options={{
-                    drawerLabel: "Calendar",
-                    title: "Calendar",
+                    drawerLabel: "Expenses",
+                    title: "Expenses",
                     drawerIcon: () => (
-                        <MaterialIcons name="category" size={20} color="#808080" />
+                        <MaterialIcons name="payments" size={20} color="#808080" />
                     )
                 }}
-                component={CalendarPage}
+                component={ExpensesPage}
+            />
+            <Drawer.Screen
+                name="Income"
+                options={{
+                    drawerLabel: "Income",
+                    title: "Income",
+                    drawerIcon: () => (
+                        <MaterialIcons name="attach-money" size={20} color="#808080" />
+                    )
+                }}
+                component={IncomePage}
+            />
+            <Drawer.Screen
+                name="Forecast"
+                options={{
+                    drawerLabel: "Future Sight",
+                    title: "Forecast",
+                    drawerIcon: () => (
+                        <MaterialIcons name="stacked-line-chart" size={20} color="#808080" />
+                    )
+                }}
+                component={ForecastPage}
             />
             <Drawer.Screen
                 name="Settings"

@@ -3,18 +3,18 @@ import { StyleSheet, Text, View, TouchableOpacity } from 'react-native'
 import React from 'react'
 import AppStyles from '../../constants/AppStyles'
 
-const PerformancePage = () => {
+const TransactionPage = () => {
 
   const navigation = useNavigation()
 
   return (
     <View style={styles.container}>
-      <Text>Performance</Text>
+      <Text>Transaction</Text>
     </View>
   )
 }
 
-export default PerformancePage
+export default TransactionPage
 
 const styles = StyleSheet.create({
   container: {

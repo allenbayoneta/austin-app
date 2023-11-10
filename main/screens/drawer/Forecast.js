@@ -5,7 +5,8 @@ import {
   Text,
   Dimensions,
   ScrollView,
-} from "react-native"; // Import Button component
+  ActivityIndicator,
+} from "react-native";
 import { auth, storage } from "../../src/firebase";
 import AppStyles from "../../constants/AppStyles";
 import UploadPicker from "../../constants/Upload";
@@ -20,6 +21,7 @@ const ForecastPage = () => {
   const [chartData, setChartData] = useState(null);
   const [forecastData, setForecastData] = useState(null);
   const [csvFileExists, setCsvFileExists] = useState(false);
+  const [loading, setLoading] = useState(false);
   const user = auth.currentUser;
   const screenWidth = Dimensions.get("window").width;
 
@@ -49,27 +51,27 @@ const ForecastPage = () => {
 
     try {
       const formData = new FormData();
-      formData.append('csvFile', {
-        uri: 'file://' + filePath,
-        type: 'application/csv',
-        name: 'csvFile',
-      });
-      formData.append('period', '12');
+      const response = await fetch(filePath);
+      const blob = await response.blob();
+
+      formData.append('csvFile', blob, 'forecast.csv'); // Append the Blob to FormData
+      formData.append('period', '6');
       console.log(formData)
-      const response = await fetch(apiUrl, {
+
+      const apiResponse = await fetch(apiUrl, {
         method: 'POST',
         body: formData,
         headers: {
           'Accept': 'application/json',
-          'Content-Type': 'multipart/form-data',
         },
       });
 
-      if (response.status === 200) {
-        const data = await response.json();
-        console.log('Received forecast data:', data);
+      if (apiResponse.status === 200) {
+        const forecastValues = await apiResponse.json();
+        console.log('Received forecast data:', forecastValues);
+        return forecastValues;
       } else {
-        console.error('API request failed with status:', response.status);
+        console.error('API request failed with status:', apiResponse.status);
       }
     } catch (error) {
       console.error('Error:', error);
@@ -82,8 +84,8 @@ const ForecastPage = () => {
       const url = await getDownloadURL(storageRef);
       const response = await fetch(url);
       const csvText = await response.text();
-      const urlText = await response.url;
-      console.log(urlText);
+      const initalForecast = await generateForecast(url);
+      console.log(initalForecast);
 
       const parsedData = readString(csvText, {
         hasHeader: true,
@@ -115,31 +117,19 @@ const ForecastPage = () => {
         ],
       };
 
-      // const forecastData = {
-      //   labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun"],
-      //   datasets: [
-      //     {
-      //       data: [
-      //         Math.random() * 1000,
-      //         Math.random() * 1000,
-      //         Math.random() * 1000,
-      //         Math.random() * 1000,
-      //         Math.random() * 1000,
-      //         Math.random() * 1000,
-      //       ],
-      //     },
-      //   ],
-      // };
+      const combinedForecastData = {
+        labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun"],
+        datasets: [initalForecast],
+      };
 
+      console.log(combinedForecastData)
       setChartData(chartData);
-
-      const initalForecast = generateForecast("/Users/abc/Downloads/forecast.csv");
-
-      setForecastData(initalForecast);
-      console.log(forecastData)
+      setForecastData(combinedForecastData);
 
     } catch (error) {
       console.error("Error downloading or parsing CSV:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -225,31 +215,35 @@ const ForecastPage = () => {
                   elevation: 5,
                 }}
               />
-              {/* <View style={{ marginTop: 30 }}>
-                <Text style={styles.headerText}>Forecast of 6 months</Text>
-                <LineChart
-                  data={forecastData}
-                  width={screenWidth - 100}
-                  height={300}
-                  chartConfig={chartConfig}
-                  bezier
-                  xLabelsOffset={10}
-                  style={{
-                    backgroundColor: "#fff",
-                    borderRadius: 10,
-                    padding: 10,
-                    marginVertical: 8,
-                    shadowColor: "#000",
-                    shadowOffset: {
-                      width: 0,
-                      height: 2,
-                    },
-                    shadowOpacity: 0.25,
-                    shadowRadius: 4,
-                    elevation: 5,
-                  }}
-                />
-              </View> */}
+              {forecastData !== null ? (
+                <View style={{ marginTop: 30 }}>
+                  <Text style={styles.headerText}>Forecast of 6 months</Text>
+                  <LineChart
+                    data={forecastData}
+                    width={screenWidth - 100}
+                    height={300}
+                    chartConfig={chartConfig}
+                    bezier
+                    xLabelsOffset={10}
+                    style={{
+                      backgroundColor: "#fff",
+                      borderRadius: 10,
+                      padding: 10,
+                      marginVertical: 8,
+                      shadowColor: "#000",
+                      shadowOffset: {
+                        width: 0,
+                        height: 2,
+                      },
+                      shadowOpacity: 0.25,
+                      shadowRadius: 4,
+                      elevation: 5,
+                    }}
+                  />
+                </View>
+              ) : (
+                <Text style={styles.messageText}>Processing Forecast Please Wait.</Text>
+              )}
               <View style={{ alignItems: "center", marginVertical: 30 }}>
                 <Pressable style={styles.uploadButton} onPress={closeForecast}>
                   <Text style={styles.buttonText}>Close Graph</Text>

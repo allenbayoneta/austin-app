@@ -4,7 +4,7 @@ import {
   View,
   SafeAreaView,
   Image,
-  TouchableOpacity,
+  Pressable,
 } from "react-native";
 import React, { useState, useEffect } from "react";
 import { useNavigation } from "@react-navigation/core";
@@ -75,13 +75,10 @@ const HomePage = () => {
             </View>
             <DrawerItemList {...props} />
             <View style={styles.logoutContainer}>
-              <MaterialIcons name="logout" color="#000" size={22} />
-              <TouchableOpacity
-                style={{ marginLeft: 25 }}
-                onPress={handleLogout}
-              >
-                <Text style={{ fontSize: 16, fontWeight: "bold" }}>Logout</Text>
-              </TouchableOpacity>
+              <Pressable style={styles.logoutButton} onPress={handleLogout}>
+                <MaterialIcons name="logout" color="#c93756" size={22} />
+                <Text style={{ fontSize: 16, fontWeight: "bold", marginLeft: 25, color: "#c93756" }}>Logout</Text>
+              </Pressable>
             </View>
           </SafeAreaView>
         );
@@ -212,6 +209,9 @@ const styles = StyleSheet.create({
   logoutContainer: {
     marginLeft: 20,
     marginTop: 80,
+    //flexDirection: "row",
+  },
+  logoutButton: {
     flexDirection: "row",
   },
 });

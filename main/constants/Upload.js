@@ -36,13 +36,11 @@ export default function UploadPicker({ isVisible, currentUser, onClose }) {
     if (blobFile) {
       if (user) {
         const userId = user.uid;
-        console.log("Uploading File....");
-        const storageRef = ref(storage, `userFiles/${userId}/${fileName}`);
+        const storageRef = ref(storage, `forecast/${userId}/forecast.csv`);
         const uploadTask = uploadBytes(storageRef, blobFile);
         try {
           await uploadTask;
           setUploadSuccess(true);
-          console.log("File uploaded successfully!");
           setFileName(null);
           setBlobFile(null);
         } catch (error) {

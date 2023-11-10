@@ -4,7 +4,7 @@ import React, { useState } from 'react'
 import AppStyles from '../constants/AppStyles'
 import { auth } from '../src/firebase'
 import { createUserWithEmailAndPassword } from 'firebase/auth';
-import logo from 'C:/Users/tipqc/au10_app/austin-app/main/assets/Au10GIF.gif'
+import logo from '../assets/Au10GIF.gif'
 
 const RegisterPage = () => {
   const [email, setEmail] = useState('')
@@ -32,7 +32,7 @@ const RegisterPage = () => {
       setEmailError(''); // Reset email error
       return;
     }
-  
+
     createUserWithEmailAndPassword(auth, email, password)
       .then(userCredentials => {
         const user = userCredentials.user;
@@ -44,9 +44,9 @@ const RegisterPage = () => {
         setPasswordMismatch(false);
         setEmailError(''); // Reset email error
       });
-  
+
     console.log(`Email: ${email}, Password: ${password}`);
-    
+
   }
 
   return (
@@ -141,7 +141,7 @@ const styles = StyleSheet.create({
     color: 'red',
     fontSize: 14,
     marginTop: 5,
-    paddingLeft:10,
+    paddingLeft: 10,
   },
   loginContainer: {
     width: '50%',

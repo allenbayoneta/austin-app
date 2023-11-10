@@ -1,10 +1,9 @@
 import { useNavigation } from '@react-navigation/core';
-import { KeyboardAvoidingView, StyleSheet, Text, TextInput, TouchableOpacity, View, Image } from 'react-native';
+import { KeyboardAvoidingView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import React, { useState } from 'react';
 import AppStyles from '../constants/AppStyles';
 import { auth } from '../src/firebase';
 import { signInWithEmailAndPassword } from 'firebase/auth';
-import logo from 'C:/Users/tipqc/au10_app/austin-app/main/assets/Au10GIF.gif'
 
 const LoginPage = () => {
   const [email, setEmail] = useState('');
@@ -33,10 +32,9 @@ const LoginPage = () => {
 
   return (
     <KeyboardAvoidingView style={styles.container} behavior="padding">
-      <Image source={logo} style={styles.mainlogo} />
       <View style={styles.logoContainer}>
-        <Text style={styles.textstyle}>
-          Advanced Utilization System for Tracking Insights and Numbers
+        <Text>
+          A.U.S.T.I.N.
         </Text>
       </View>
       <View style={styles.inputContainer}>
@@ -92,7 +90,7 @@ const styles = StyleSheet.create({
     padding: 30,
   },
   inputContainer: {
-    width: 'flex',
+    width: '80%',
   },
   input: {
     backgroundColor: AppStyles.color.primary,
@@ -115,7 +113,7 @@ const styles = StyleSheet.create({
   },
   button: {
     backgroundColor: AppStyles.color.accent,
-    width: 'flex',
+    width: '100%',
     padding: 15,
     borderRadius: 10,
     alignItems: 'center',
@@ -139,15 +137,4 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     fontSize: 14,
   },
-  mainlogo: {
-    height: 130,
-    width: 130,
-    borderRadius: 100,
-    alignItems: 'baseline',
-  },
-  textstyle: {
-    textAlign: 'center',
-    fontSize: 17,
-    fontFamily: 'Iowan Old Style'
-  }
 });

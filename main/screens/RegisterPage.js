@@ -4,7 +4,7 @@ import React, { useState } from 'react'
 import AppStyles from '../constants/AppStyles'
 import { auth } from '../src/firebase'
 import { createUserWithEmailAndPassword } from 'firebase/auth';
-import logo from 'C:/Users/tipqc/au10_app/austin-app/main/assets/Au10GIF.gif'
+import logo from 'C:/Users/cjame/austin-app/austin-app/main/assets/Au10GIF.gif'
 
 const RegisterPage = () => {
   const [email, setEmail] = useState('')

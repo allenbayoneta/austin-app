@@ -12,9 +12,9 @@ const DashboardPage = () => {
   const [period, setPeriod] = useState()
   const handleValueChange=(itemValue, itemIndex) =>setPeriod(itemValue)
   const chartData={
-    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul','Aug', 'Sept', 'Oct', 'Nov', 'Dec'],
+    labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4', 'Week 5', 'JWeek 6'],
     datasets:[{
-      data:[20, 45, 28, 80, 99, 43, 50, 60, 27, 88, 99, 12],
+      data:[2000, 4500, 28000, 8000, 990, 4300],
     }
   ],
   }
@@ -36,7 +36,7 @@ const DashboardPage = () => {
           <View style={styles.supergraph}>
             <LineChart 
               data={chartData}
-              width={500}
+              width={1000}
               height={500}
               yAxisLabel="P"
               chartConfig={{

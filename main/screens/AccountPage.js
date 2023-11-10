@@ -2,8 +2,8 @@ import { useNavigation } from '@react-navigation/core'
 import { KeyboardAvoidingView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
 import React, { useState, useEffect } from 'react'
 import AppStyles from '../constants/AppStyles'
-import { auth, database } from '../src/firebase'
-import { ref, set, get} from 'firebase/database'
+import { auth, database, storage } from '../src/firebase'
+import { ref, set, get, uploadString, getDownloadURL} from 'firebase/database'
 
 const AccountPage = () => {
     const [firstName, setFirstName] = useState('')
@@ -11,6 +11,7 @@ const AccountPage = () => {
     const [companyName, setCompanyName] = useState('')
     const [roleName, setRoleName] = useState('')
     const [userUid, setUserUid] = useState('');
+    const [profileImage, setProfileImage] = useState(null);
     const [error, setError] = useState(null);
     
     const navigation = useNavigation()
@@ -37,6 +38,26 @@ const AccountPage = () => {
         }
     }, []);
 
+    const handleImagePicker = () => {
+        const options = {
+            title: 'Select Profile Picture',
+            storageOptions:{
+                skipBackup: true,
+                path:'images',
+            }
+        }
+
+        ImagePicker.showImagePicker(options, (response) => {
+            if (response.didCancel){
+                console.log('User cancelled');
+            } else if(response.error){
+                console.log('ImagePicker Error: ', response.error);
+            } else {
+                setProfileImage(response.uri);
+            }
+            })
+        }
+
     const handleDetails = async () => {
         try {
             const userRef = ref(database, 'users/' + userUid);
@@ -49,6 +70,14 @@ const AccountPage = () => {
             };
 
             await set(userRef, updatedUserDetails);
+
+            if (profileImage){
+                const imageRef = storage.ref().child(`profile_images/${userUid}`);
+                await uploadString(imageRef, profileImage, 'data_url');
+                const imageUrl = await getDownloadURL(imageRef);
+                // Update user profile image URL in the database
+                await set(userRef, { ...updatedUserDetails, profileImage: imageUrl }, { merge: true });
+            }
             navigation.replace('Home');
 
         } catch (error) {
@@ -64,6 +93,10 @@ const AccountPage = () => {
                     Account Details
                 </Text>
             </View>
+            {profileImage && <Image source={{ uri: profileImage }} style={styles.profileImage} />} 
+            <TouchableOpacity onPress={handleImagePicker} style={styles.imagePickerButton}>
+                <Text>Select Profile Picture</Text>
+            </TouchableOpacity>
             <View style={styles.inputContainer}>
                 <TextInput
                     placeholder="First Name"

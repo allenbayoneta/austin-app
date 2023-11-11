@@ -208,7 +208,7 @@ const styles = StyleSheet.create({
   },
   logoutContainer: {
     marginLeft: 20,
-    marginTop: 80,
+    marginTop: 40,
     //flexDirection: "row",
   },
   logoutButton: {

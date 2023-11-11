@@ -92,7 +92,9 @@ const styles = StyleSheet.create({
     padding: 30,
   },
   inputContainer: {
-    width: 'flex',
+    width: '70%',
+    maxWidth: 600,
+    padding: 15,
   },
   input: {
     backgroundColor: AppStyles.color.primary,
@@ -115,15 +117,16 @@ const styles = StyleSheet.create({
   },
   button: {
     backgroundColor: AppStyles.color.accent,
-    width: 'flex',
     padding: 15,
     borderRadius: 10,
     alignItems: 'center',
+    paddingHorizontal: 30,
   },
   buttonText: {
     color: 'white',
     fontWeight: '700',
     fontSize: 16,
+    alignItems: 'center'
   },
   text: {
     fontSize: 14,
@@ -148,6 +151,7 @@ const styles = StyleSheet.create({
   textstyle: {
     textAlign: 'center',
     fontSize: 17,
-    fontFamily: 'Iowan Old Style'
+    fontFamily: 'Archivo',
+    fontWeight: 'bold',
   }
 });

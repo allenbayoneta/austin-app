@@ -59,10 +59,11 @@ const styles = StyleSheet.create({
     marginBottom: 15,
     paddingVertical: 10,
     paddingHorizontal: 15,
-    backgroundColor: '#E56B6B',
+    backgroundColor: AppStyles.color.accent,
     borderRadius: 8,
   },
   settingLabel: {
+    color: '#fff',
     fontSize: 18,
   },
 });

@@ -11,9 +11,6 @@ import { useNavigation } from "@react-navigation/core";
 import AppStyles from "../constants/AppStyles";
 import Icon from "../assets/profile_pic.png";
 import DashboardPage from "./drawer/Dashboard";
-import ExpensesPage from "./drawer/Expenses";
-import IncomePage from "./drawer/Income";
-import TransactionPage from "./drawer/ViewTransac";
 import ForecastPage from "./drawer/Forecast";
 import SettingsPage from "./drawer/Settings";
 import "react-native-gesture-handler";
@@ -61,7 +58,7 @@ const HomePage = () => {
     <Drawer.Navigator
       drawerContent={(props) => {
         return (
-          <SafeAreaView>
+          <SafeAreaView >
             <View style={styles.drawerItems}>
               <Image source={Icon} style={styles.profilePic} />
               {userData ? (
@@ -76,8 +73,8 @@ const HomePage = () => {
             <DrawerItemList {...props} />
             <View style={styles.logoutContainer}>
               <Pressable style={styles.logoutButton} onPress={handleLogout}>
-                <MaterialIcons name="logout" color="#c93756" size={22} />
-                <Text style={{ fontSize: 16, fontWeight: "bold", marginLeft: 25, color: "#c93756" }}>Logout</Text>
+                <MaterialIcons name="logout" color={AppStyles.color.accent} size={22} />
+                <Text style={{ fontSize: 16, fontWeight: "bold", marginLeft: 25, color: AppStyles.color.accent }}>Logout</Text>
               </Pressable>
             </View>
           </SafeAreaView>
@@ -110,39 +107,6 @@ const HomePage = () => {
           ),
         }}
         component={DashboardPage}
-      />
-      <Drawer.Screen
-        name="View Transaction"
-        options={{
-          drawerLabel: "View Transaction",
-          title: "View Transaction",
-          drawerIcon: () => (
-            <MaterialIcons name="poll" size={20} color="#808080" />
-          ),
-        }}
-        component={TransactionPage}
-      />
-      <Drawer.Screen
-        name="Expenses"
-        options={{
-          drawerLabel: "Expenses",
-          title: "Expenses",
-          drawerIcon: () => (
-            <MaterialIcons name="payments" size={20} color="#808080" />
-          ),
-        }}
-        component={ExpensesPage}
-      />
-      <Drawer.Screen
-        name="Income"
-        options={{
-          drawerLabel: "Income",
-          title: "Income",
-          drawerIcon: () => (
-            <MaterialIcons name="attach-money" size={20} color="#808080" />
-          ),
-        }}
-        component={IncomePage}
       />
       <Drawer.Screen
         name="Forecast"
@@ -184,7 +148,7 @@ const styles = StyleSheet.create({
     backgroundColor: AppStyles.color.background,
   },
   drawerItems: {
-    height: "50%",
+    height: "70%",
     width: "100%",
     justifyContent: "center",
     alignItems: "center",
@@ -209,7 +173,6 @@ const styles = StyleSheet.create({
   logoutContainer: {
     marginLeft: 20,
     marginTop: 40,
-    //flexDirection: "row",
   },
   logoutButton: {
     flexDirection: "row",

@@ -15,6 +15,7 @@ import React, { useState, useEffect } from "react";
 import { readString } from "react-native-csv";
 import { LineChart } from "react-native-chart-kit";
 import { ref, getDownloadURL } from "firebase/storage";
+import { Table, Row, Rows } from 'react-native-table-component';
 
 const ForecastPage = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -54,7 +55,7 @@ const ForecastPage = () => {
       const response = await fetch(filePath);
       const blob = await response.blob();
 
-      formData.append('csvFile', blob, 'forecast.csv'); // Append the Blob to FormData
+      formData.append('csvFile', blob, 'forecast.csv');
       formData.append('period', '6');
       console.log(formData)
 
@@ -86,6 +87,8 @@ const ForecastPage = () => {
       const csvText = await response.text();
       const initalForecast = await generateForecast(url);
       console.log(initalForecast);
+
+      console.log(loading);
 
       const parsedData = readString(csvText, {
         hasHeader: true,
@@ -141,7 +144,7 @@ const ForecastPage = () => {
   const chartConfig = {
     backgroundGradientFrom: "#fff",
     backgroundGradientTo: "#fff",
-    color: (opacity = 1) => `rgba(201,55,86, ${opacity})`,
+    color: (opacity = 1) => `rgba(104,66,239, ${opacity})`,
   };
 
   return (
@@ -166,10 +169,31 @@ const ForecastPage = () => {
             </Pressable>
           </View>
         </View>
+
         {csvFileExists && (
-          <Pressable style={styles.uploadButton} onPress={downloadAndParseCSV}>
-            <Text style={styles.buttonText}>Predict Sales</Text>
-          </Pressable>
+          <View style={{ marginVertical: 10, alignItems: "center" }}>
+            <Text style={styles.messageText}>A file is available for forecasting.</Text>
+            <Pressable
+              style={[styles.uploadButton, { marginTop: 10 }]}
+              onPress={() => {
+                setLoading(true);
+                downloadAndParseCSV();
+              }}
+              disabled={loading}
+            >
+              <Text style={styles.buttonText}>
+                {loading ? "Loading..." : "Predict Sales"}
+              </Text>
+            </Pressable>
+          </View>
+        )}
+
+        {loading && (
+          <ActivityIndicator
+            style={{ marginTop: 20 }}
+            size="large"
+            color={AppStyles.color.accent}
+          />
         )}
         <View style={{ flex: 1, alignItems: "center", marginTop: 30 }}>
           {chartData ? (
@@ -238,8 +262,19 @@ const ForecastPage = () => {
                       shadowOpacity: 0.25,
                       shadowRadius: 4,
                       elevation: 5,
+                      marginBottom: 10,
                     }}
                   />
+                  <Table borderStyle={{ borderWidth: 2, borderColor: AppStyles.color.accent }}>
+                    <Row data={['Month', 'Forecast']} style={{ height: 40, backgroundColor: AppStyles.color.accent }} textStyle={{ margin: 6, fontWeight: 'bold', color: '#fff' }} />
+                    <Rows
+                      data={forecastData.labels.map((value, index) => ([
+                        value,
+                        `${forecastData.datasets[0].data[index].toFixed(2)}`
+                      ]))}
+                      textStyle={{ margin: 6 }}
+                    />
+                  </Table>
                 </View>
               ) : (
                 <Text style={styles.messageText}>Processing Forecast Please Wait.</Text>

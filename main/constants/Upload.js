@@ -6,12 +6,13 @@ import { ref, uploadBytes } from "firebase/storage";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import AppStyles from "./AppStyles";
 
-export default function UploadPicker({ isVisible, currentUser, onClose }) {
+export default function UploadPicker({ isVisible, currentUser, onClose, folder }) {
   const [blobFile, setBlobFile] = useState(null);
   const [fileName, setFileName] = useState(null);
   const [uploadSuccess, setUploadSuccess] = useState(false);
   const [uploadFailed, setUploadFailed] = useState(false);
   const user = currentUser;
+  const folderName = folder;
 
   const clearFiles = () => {
     setFileName(null);
@@ -36,7 +37,7 @@ export default function UploadPicker({ isVisible, currentUser, onClose }) {
     if (blobFile) {
       if (user) {
         const userId = user.uid;
-        const storageRef = ref(storage, `forecast/${userId}/forecast.csv`);
+        const storageRef = ref(storage, `${folderName}/${userId}/${folderName}.csv`);
         const uploadTask = uploadBytes(storageRef, blobFile);
         try {
           await uploadTask;
@@ -70,7 +71,7 @@ export default function UploadPicker({ isVisible, currentUser, onClose }) {
         <View style={styles.modalView}>
           <View style={styles.mainContainer}>
             <View style={styles.selectContainer}>
-              <Text style={styles.messageText}>Accepts .CSV and .XLS</Text>
+              <Text style={styles.messageText}>Accepts .CSV</Text>
               <Pressable style={styles.selectButton} onPress={pickDocument}>
                 <Text style={styles.buttonText}>Select File</Text>
               </Pressable>

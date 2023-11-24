@@ -25,10 +25,11 @@ const ForecastPage = () => {
   const [loading, setLoading] = useState(false);
   const user = auth.currentUser;
   const screenWidth = Dimensions.get("window").width;
+  const file = 'forecast'
 
   const checkCsvFile = async () => {
     try {
-      const storageRef = ref(storage, `/forecast/${user.uid}/forecast.csv`);
+      const storageRef = ref(storage, `/${file}/${user.uid}/${file}.csv`);
       await getDownloadURL(storageRef);
       setCsvFileExists(true);
     } catch (error) {
@@ -154,6 +155,7 @@ const ForecastPage = () => {
           isVisible={isModalVisible}
           currentUser={user}
           onClose={onModalClose}
+          folder={file}
         />
         <View style={styles.uploadContainer}>
           <View style={styles.messageContainer}>

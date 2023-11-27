@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import AppStyles from '../constants/AppStyles';
 import { auth } from '../src/firebase';
 import { signInWithEmailAndPassword } from 'firebase/auth';
-import logo from '../assets/Au10GIF.gif'
+import logo from '../assets/Au10GIF.png'
 
 const LoginPage = () => {
   const [email, setEmail] = useState('');

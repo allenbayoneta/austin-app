@@ -1,7 +1,5 @@
 import {
-  StyleSheet,
-  Text,
-  View,
+
   SafeAreaView,
   Image,
   Pressable,
@@ -11,6 +9,10 @@ import { useNavigation } from "@react-navigation/core";
 import AppStyles from "../constants/AppStyles";
 import Icon from "../assets/profile_pic.png";
 import DashboardPage from "./drawer/Dashboard";
+// import ExpensesPage from "./drawer/Expenses";
+// import IncomePage from "./drawer/Income";
+// import TransactionPage from "./drawer/ViewTransac";
+import { Modal, View, Text, TouchableHighlight, StyleSheet } from 'react-native';
 import ForecastPage from "./drawer/Forecast";
 import SettingsPage from "./drawer/Settings";
 import "react-native-gesture-handler";
@@ -21,6 +23,10 @@ import {
 import { SimpleLineIcons, MaterialIcons } from "@expo/vector-icons";
 import { auth, database } from "../src/firebase";
 import { ref, get } from "firebase/database";
+import { launchImageLibrary } from 'react-native-image-picker';
+import { ref as storageRef, uploadBytes, getDownloadURL } from 'firebase/storage';
+import { storage } from '../src/firebase'; // Assuming storage is exported from firebase.js
+import { update } from 'firebase/database';
 
 const Drawer = createDrawerNavigator();
 
@@ -54,13 +60,59 @@ const HomePage = () => {
     }
   };
 
+  const changeProfilePic = async () => {
+    // Open image library:
+    const result = await launchImageLibrary({ mediaType: 'photo' });
+
+    if (result.didCancel) {
+      console.log('User cancelled image picker');
+    } else if (result.error) {
+      console.log('ImagePicker Error: ', result.error);
+    } else {
+      const imageUri = result.assets[0].uri;
+      uploadImage(imageUri);
+    }
+  };
+
+  const uploadImage = async (uri) => {
+    const response = await fetch(uri);
+    const blob = await response.blob();
+    const fileRef = storageRef(storage, `profile_pics/${auth.currentUser.uid}`);
+    
+    await uploadBytes(fileRef, blob);
+    const imageUrl = await getDownloadURL(fileRef);
+
+    // Update user's profile picture URL in the database
+    const userRef = ref(database, 'users/' + auth.currentUser.uid);
+    update(userRef, { profilePic: imageUrl })
+      .then(() => {
+        console.log('Profile picture updated successfully!');
+        // Update the userData state to reflect the new profile picture
+        setUserData({ ...userData, profilePic: imageUrl });
+      })
+      .catch((error) => {
+        console.error('Error updating profile picture:', error);
+      });
+
+    // Update the userData state
+    setUserData({ ...userData, profilePic: imageUrl });
+  };
+
+
+
+  const MyModal = () => {
+    const [modalVisible, setModalVisible] = useState(false);
+  };
+
   return (
     <Drawer.Navigator
       drawerContent={(props) => {
         return (
-          <SafeAreaView >
+          <SafeAreaView>
             <View style={styles.drawerItems}>
-              <Image source={Icon} style={styles.profilePic} />
+            <TouchableHighlight style={styles.profilePic} onPress={changeProfilePic}>
+        <Image source={{ uri: userData ? userData.profilePic : Icon }} style={styles.profilePic} />
+      </TouchableHighlight>
               {userData ? (
                 <>
                   <Text style={styles.username}>
@@ -73,8 +125,8 @@ const HomePage = () => {
             <DrawerItemList {...props} />
             <View style={styles.logoutContainer}>
               <Pressable style={styles.logoutButton} onPress={handleLogout}>
-                <MaterialIcons name="logout" color={AppStyles.color.accent} size={22} />
-                <Text style={{ fontSize: 16, fontWeight: "bold", marginLeft: 25, color: AppStyles.color.accent }}>Logout</Text>
+                <MaterialIcons name="logout" color="#c93756" size={22} />
+                <Text style={{ fontSize: 16, fontWeight: "bold", marginLeft: 25, color: "#c93756" }}>Logout</Text>
               </Pressable>
             </View>
           </SafeAreaView>
@@ -108,6 +160,39 @@ const HomePage = () => {
         }}
         component={DashboardPage}
       />
+      {/* <Drawer.Screen
+        name="View Transaction"
+        options={{
+          drawerLabel: "View Transaction",
+          title: "View Transaction",
+          drawerIcon: () => (
+            <MaterialIcons name="poll" size={20} color="#808080" />
+          ),
+        }}
+        component={TransactionPage}
+      />
+      <Drawer.Screen
+        name="Expenses"
+        options={{
+          drawerLabel: "Expenses",
+          title: "Expenses",
+          drawerIcon: () => (
+            <MaterialIcons name="payments" size={20} color="#808080" />
+          ),
+        }}
+        component={ExpensesPage}
+      />
+      <Drawer.Screen
+        name="Income"
+        options={{
+          drawerLabel: "Income",
+          title: "Income",
+          drawerIcon: () => (
+            <MaterialIcons name="attach-money" size={20} color="#808080" />
+          ),
+        }}
+        component={IncomePage}
+      /> */}
       <Drawer.Screen
         name="Forecast"
         options={{
@@ -148,7 +233,7 @@ const styles = StyleSheet.create({
     backgroundColor: AppStyles.color.background,
   },
   drawerItems: {
-    height: "70%",
+    height: "50%",
     width: "100%",
     justifyContent: "center",
     alignItems: "center",
@@ -173,6 +258,7 @@ const styles = StyleSheet.create({
   logoutContainer: {
     marginLeft: 20,
     marginTop: 40,
+    //flexDirection: "row",
   },
   logoutButton: {
     flexDirection: "row",

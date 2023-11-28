@@ -4,6 +4,7 @@ import {
   Image,
   Pressable,
 } from "react-native";
+import * as DocumentPicker from "expo-document-picker";
 import React, { useState, useEffect } from "react";
 import { useNavigation } from "@react-navigation/core";
 import AppStyles from "../constants/AppStyles";
@@ -33,6 +34,7 @@ const Drawer = createDrawerNavigator();
 const HomePage = () => {
   const navigation = useNavigation();
   const [userData, setUserData] = useState(null);
+  const [blobFile, setBlobFile] = useState(null);
 
   useEffect(() => {
     const user = auth.currentUser;
@@ -60,42 +62,53 @@ const HomePage = () => {
     }
   };
 
-  const changeProfilePic = async () => {
-    // Open image library:
-    const result = await launchImageLibrary({ mediaType: 'photo' });
 
-    if (result.didCancel) {
-      console.log('User cancelled image picker');
-    } else if (result.error) {
-      console.log('ImagePicker Error: ', result.error);
-    } else {
-      const imageUri = result.assets[0].uri;
-      uploadImage(imageUri);
+  const changeProfilePic = async () => {
+    try {
+      let result = await DocumentPicker.getDocumentAsync({
+        type: 'image/*',
+      });
+  
+      console.log("Document Picker Result: ", result); // Detailed logging of the result
+  
+      if (result.type !== 'cancel' && result.assets && result.assets.length > 0) {
+        const selectedFile = result.assets[0];
+        console.log("Selected image URI: ", selectedFile.uri);
+        uploadImage(selectedFile.uri);
+      } else {
+        console.error("Document picker was cancelled or no file was selected");
+      }
+    } catch (error) {
+      console.error("Error picking document:", error);
     }
   };
-
+  
   const uploadImage = async (uri) => {
-    const response = await fetch(uri);
-    const blob = await response.blob();
-    const fileRef = storageRef(storage, `profile_pics/${auth.currentUser.uid}`);
-    
-    await uploadBytes(fileRef, blob);
-    const imageUrl = await getDownloadURL(fileRef);
+    const user = auth.currentUser;
+    if (!user) {
+      console.error("User not authenticated.");
+      return;
+    }
 
-    // Update user's profile picture URL in the database
-    const userRef = ref(database, 'users/' + auth.currentUser.uid);
-    update(userRef, { profilePic: imageUrl })
-      .then(() => {
-        console.log('Profile picture updated successfully!');
-        // Update the userData state to reflect the new profile picture
-        setUserData({ ...userData, profilePic: imageUrl });
-      })
-      .catch((error) => {
-        console.error('Error updating profile picture:', error);
-      });
+    if (!uri) {
+      console.error("Invalid URI.");
+      return;
+    }
 
-    // Update the userData state
-    setUserData({ ...userData, profilePic: imageUrl });
+    const fileRef = storageRef(storage, `profile_pics/${user.uid}`);
+    try {
+      const response = await fetch(uri);
+      const blob = await response.blob();
+      await uploadBytes(fileRef, blob);
+
+      const imageUrl = await getDownloadURL(fileRef);
+      const userRef = ref(database, 'users/' + user.uid);
+      await update(userRef, { profilePic: imageUrl });
+      console.log('Profile picture updated successfully!');
+      setUserData({ ...userData, profilePic: imageUrl });
+    } catch (error) {
+      console.error("Error uploading file:", error);
+    }
   };
 
 
@@ -109,10 +122,17 @@ const HomePage = () => {
       drawerContent={(props) => {
         return (
           <SafeAreaView>
-            <View style={styles.drawerItems}>
-            <TouchableHighlight style={styles.profilePic} onPress={changeProfilePic}>
-        <Image source={{ uri: userData ? userData.profilePic : Icon }} style={styles.profilePic} />
-      </TouchableHighlight>
+          <View style={styles.drawerItems}>
+          <TouchableHighlight style={styles.profilePic} onPress={changeProfilePic}>
+  <Image
+    source={
+      userData && userData.profilePic
+        ? { uri: userData.profilePic }  // Remote URI
+        : Icon // Local image
+    }
+    style={styles.profilePic}
+  />
+</TouchableHighlight>
               {userData ? (
                 <>
                   <Text style={styles.username}>

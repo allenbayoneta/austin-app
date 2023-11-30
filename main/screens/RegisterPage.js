@@ -1,10 +1,11 @@
 import { useNavigation } from '@react-navigation/core'
-import { KeyboardAvoidingView, StyleSheet, Text, TextInput, TouchableOpacity, View, Image } from 'react-native'
+import { Alert, KeyboardAvoidingView, Keyboard, StyleSheet, Text, TextInput, TouchableOpacity, View, Image } from 'react-native'
 import React, { useState } from 'react'
 import AppStyles from '../constants/AppStyles'
 import { auth } from '../src/firebase'
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import logo from '../assets/Au10GIF.png'
+import Icon from 'react-native-vector-icons/FontAwesome';
 
 const RegisterPage = () => {
   const [email, setEmail] = useState('')
@@ -13,6 +14,23 @@ const RegisterPage = () => {
   const [passwordMismatch, setPasswordMismatch] = useState(false);
   const [emailError, setEmailError] = useState(''); // State for email validation error
   const navigation = useNavigation()
+  const [emailAlreadyInUse, setEmailAlreadyInUse] = useState(false);
+
+  const [passwordVisibility, setPasswordVisibility] = useState(true);
+  const [rePasswordVisibility, setRePasswordVisibility] = useState(true);
+  
+  const renderPasswordIcon = (isVisible, toggleVisibility) => (
+    <TouchableOpacity onPress={toggleVisibility} style={styles.eyeIcon}>
+      <Icon name={isVisible ? 'eye' : 'eye-slash'} size={20} color="grey" />
+    </TouchableOpacity>
+  );
+  const togglePasswordVisibility = () => {
+    setPasswordVisibility(!passwordVisibility);
+  };
+  
+  const toggleRePasswordVisibility = () => {
+    setRePasswordVisibility(!rePasswordVisibility);
+  };
 
   const validateEmail = (email) => {
 
@@ -34,22 +52,30 @@ const RegisterPage = () => {
     }
   
     createUserWithEmailAndPassword(auth, email, password)
-      .then(userCredentials => {
+    .then(userCredentials => {
         const user = userCredentials.user;
         console.log('Logged in with:', user.email);
         navigation.replace("Account");
       })
       .catch(error => {
-        console.log(`Register Failed: ${error.message}`);
-        setPasswordMismatch(false);
-        setEmailError(''); // Reset email error
+        if (error.code === 'auth/email-already-in-use') {
+          setEmailAlreadyInUse(true); // Set email already in use error
+        } else {
+          console.log(`Register Failed: ${error.message}`);
+        }
+        setPasswordMismatch(false); // Reset password mismatch error
+        setEmailError(''); // Reset other email errors
       });
+      
   
     console.log(`Email: ${email}, Password: ${password}`);
     
   }
 
   return (
+    <KeyboardAvoidingView style={styles.container} behavior="height"           
+    onStartShouldSetResponder={() => Keyboard.dismiss()}
+  >
     <View style={styles.container}>
       <Image source={logo} style={styles.mainlogo} />
       <View style={styles.logoContainer}>
@@ -58,6 +84,7 @@ const RegisterPage = () => {
         </Text>
       </View>
       <View style={styles.inputContainer}>
+        
         <TextInput
           placeholder="Email"
           value={email}
@@ -73,25 +100,34 @@ const RegisterPage = () => {
         {emailError ? (
           <Text style={styles.errorText}>{emailError}</Text>
         ) : null}
-        <TextInput
-          placeholder="Enter Password"
-          value={password}
-          onChangeText={text => setPassword(text)}
-          style={styles.input}
-          secureTextEntry
-        />
-        <TextInput
-          placeholder="Re-enter Password"
-          value={rePassword}
-          onChangeText={text => setRePassword(text)}
-          style={[
-            styles.input,
-            passwordMismatch && styles.inputError
-          ]}
-          secureTextEntry
-        />
+  <View style={styles.passwordInputContainer}>
+          <TextInput
+            placeholder="Enter Password"
+            value={password}
+            onChangeText={text => setPassword(text)}
+            style={styles.input}
+            secureTextEntry={!passwordVisibility}
+          />
+          {renderPasswordIcon(passwordVisibility, togglePasswordVisibility)}
+        </View>
+        <View style={styles.passwordInputContainer}>
+          <TextInput
+            placeholder="Re-enter Password"
+            value={rePassword}
+            onChangeText={text => setRePassword(text)}
+            style={[
+              styles.input,
+              passwordMismatch && styles.inputError
+            ]}
+            secureTextEntry={!rePasswordVisibility}
+          />
+          {renderPasswordIcon(rePasswordVisibility, toggleRePasswordVisibility)}
+        </View>
         {passwordMismatch && (
           <Text style={styles.errorText}>Password don't match</Text>
+        )}
+                {emailAlreadyInUse && (
+          <Text style={styles.errorText}>This email is already registered</Text>
         )}
       </View>
 
@@ -112,6 +148,8 @@ const RegisterPage = () => {
         </TouchableOpacity>
       </View>
     </View>
+    </KeyboardAvoidingView>
+
   )
 }
 
@@ -132,6 +170,9 @@ const styles = StyleSheet.create({
     maxWidth: 600,
     padding: 15,
   },
+  passwordInputContainer: {
+    position: 'relative', 
+  },
   input: {
     backgroundColor: AppStyles.color.primary,
     paddingHorizontal: 20,
@@ -150,6 +191,13 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     marginTop: 50,
+  },
+  eyeIcon: {
+    position: 'absolute',
+    right: 10,
+    top: 5,
+    height: '100%',
+    justifyContent: 'center',
   },
   button: {
     backgroundColor: AppStyles.color.accent,

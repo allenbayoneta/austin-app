@@ -207,7 +207,7 @@ const DashboardPage = () => {
           folder={file}
         />
         {csvFileExists ? (
-          <View style={{ marginVertical: 30, width: '100%' }}>
+          <View style={{ marginVertical: 10, width: '100%' }}>
             <View style={styles.Frow}>
               <View style={styles.FrowBalContainer}>
                 <Text style={styles.balText}>Current Balance</Text>
@@ -227,13 +227,13 @@ const DashboardPage = () => {
                 <Text style={styles.chartHeaderText}>Sales Breakdown</Text>
                 <PieChart
                   data={data}
-                  width={width * 0.3} // Make sure the width is correct
-                  height={150} // Adjust height if necessary
+                  width={width < 600 ? width * 0.7 : width * 0.3}
+                  height={160}
                   chartConfig={chartConfig}
                   accessor={'amount'}
                   backgroundColor={'transparent'}
-                  paddingLeft={'10'}
-                  center={[10, 10]} // Adjust the centering if necessary
+                  paddingLeft={'5'}
+                  center={[10, 10]}
                   absolute
                 />
               </View>
@@ -308,7 +308,7 @@ const DashboardPage = () => {
             </View>
           </View>
         ) : (
-          <Text style={[styles.messageText, { marginVertical: 30 }]}>Visualizations will be here. Please upload a CSV file with proper format.</Text>
+          <Text style={[styles.messageText, { marginVertical: 30, padding: 10 }]}>Visualizations will be here. Please upload a CSV file with proper format.</Text>
         )}
         <View style={styles.uploadContainer}>
           <View style={styles.messageContainer}>
@@ -345,7 +345,7 @@ const styles = StyleSheet.create({
     padding: 16,
     paddingTop: 30,
     backgroundColor: 'transparent',
-    maxHeight: '100%', // Set a maximum height to occupy available space
+    maxHeight: '100%',
   },
   paginationButton: {
     backgroundColor: AppStyles.color.accent,
@@ -477,7 +477,7 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
     alignItems: 'center',
     justifyContent: 'center',
-    width: "80%",
+    width: "90%",
     alignSelf: 'center',
     marginVertical: 20,
   },
@@ -498,7 +498,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 4,
     elevation: 5,
-    width: width < 600 ? '80%' : width * 0.20,
+    width: width < 600 ? '90%' : width * 0.25,
     height: 120, // Set width based on screen width
     marginBottom: 10, // Add margin at the bottom for spacing
   },
@@ -519,7 +519,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 4,
     elevation: 5,
-    width: width < 600 ? '80%' : width * 0.20, // Set width based on screen width
+    width: width < 600 ? '90%' : width * 0.25, // Set width based on screen width
     height: 120,
     marginBottom: 10, // Add margin at the bottom for spacing
   },
@@ -540,7 +540,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 4,
     elevation: 5,
-    width: width < 600 ? '80%' : width * 0.30,
+    width: width < 600 ? '90%' : width * 0.30,
   },
   balText: {
     fontSize: 24,
@@ -567,7 +567,7 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
     alignItems: 'center',
     justifyContent: 'center',
-    width: "80%",
+    width: "90%",
     alignSelf: 'center',
     marginVertical: 20,
   },
@@ -577,7 +577,7 @@ const styles = StyleSheet.create({
     marginLeft: 10,
     paddingHorizontal: '175%',
     paddingVertical: '120%',
-    borderRadius: '20px'
+
   },
   Trow: {
     flexDirection: 'row',

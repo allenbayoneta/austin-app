@@ -5,12 +5,21 @@ import AppStyles from '../constants/AppStyles';
 import { auth } from '../src/firebase';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import logo from '../assets/Au10GIF.png'
+import { Platform, Keyboard } from 'react-native';
+import Icon from 'react-native-vector-icons/FontAwesome'; // Use the appropriate icon set
 
 const LoginPage = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loginError, setLoginError] = useState(null); // State for login error
   const navigation = useNavigation();
+
+  const [passwordVisibility, setPasswordVisibility] = useState(true);
+
+  // Toggle the state between true and false
+  const togglePasswordVisibility = () => {
+    setPasswordVisibility(!passwordVisibility);
+  };
 
   const handleLogin = () => {
     signInWithEmailAndPassword(auth, email, password)
@@ -32,7 +41,10 @@ const LoginPage = () => {
   };
 
   return (
-    <KeyboardAvoidingView style={styles.container} behavior="padding">
+    <KeyboardAvoidingView style={styles.container} behavior="height"           
+    onStartShouldSetResponder={() => Keyboard.dismiss()}
+  >
+ 
       <Image source={logo} style={styles.mainlogo} />
       <View style={styles.logoContainer}>
         <Text style={styles.textstyle}>
@@ -46,14 +58,19 @@ const LoginPage = () => {
           onChangeText={text => setEmail(text)}
           style={styles.input}
         />
+     <View style={styles.passwordContainer}>
         <TextInput
           placeholder="Password"
           value={password}
           onChangeText={text => setPassword(text)}
-          style={styles.input}
-          secureTextEntry
+          style={[styles.input, styles.passwordInput]} // Apply password-specific styling
+          secureTextEntry={passwordVisibility}
           onKeyPress={handleKeyPress}
         />
+        <TouchableOpacity onPress={togglePasswordVisibility} style={styles.eyeIcon}>
+          <Icon name={passwordVisibility ? "eye-slash" : "eye"} size={20} color="#000" />
+        </TouchableOpacity>
+      </View>
         {loginError && (
           <Text style={styles.errorText}>{loginError}</Text>
         )}
@@ -103,6 +120,9 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     marginTop: 11,
   },
+  passwordContainer: {
+    position: 'relative', 
+  },
   errorText: {
     color: 'red',
     fontSize: 14,
@@ -141,6 +161,13 @@ const styles = StyleSheet.create({
     color: AppStyles.color.accent,
     fontWeight: '700',
     fontSize: 14,
+  },
+  eyeIcon: {
+    position: 'absolute',
+    right: 10,
+    top: 5,
+    height: '100%',
+    justifyContent: 'center',
   },
   mainlogo: {
     height: 130,

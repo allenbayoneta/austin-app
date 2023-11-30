@@ -137,16 +137,26 @@ const DashboardPage = () => {
     useShadowColorFromDataset: false, // optional
   };
 
+  const calculatePercentage = (value, total) => {
+    return total > 0 ? ((value / total) * 100).toFixed(2) : 0;
+  };
+
+  const totalAmount = () => {
+    const incomeValue = income ? parseFloat(income.replace(/,/g, '')) : 0;
+    const expenseValue = expense ? parseFloat(expense.replace(/,/g, '')) : 0;
+    return incomeValue + expenseValue;
+  };
+
   const data = [
     {
-      name: 'Income',
+      name: `${calculatePercentage(income ? parseFloat(income.replace(/,/g, '')) : 0, totalAmount())}%`,
       amount: income ? parseFloat(income.replace(/,/g, '')) : 0,
       color: '#6842ef',
       legendFontColor: '#000',
       legendFontSize: 12,
     },
     {
-      name: 'Expense',
+      name: `${calculatePercentage(expense ? parseFloat(expense.replace(/,/g, '')) : 0, totalAmount())}%`,
       amount: expense ? parseFloat(expense.replace(/,/g, '')) : 0,
       color: '#4172ef',
       legendFontColor: '#000',
@@ -154,6 +164,7 @@ const DashboardPage = () => {
     },
   ];
 
+  
 
   const screenWidth = Dimensions.get('window').width;
 

@@ -18,7 +18,7 @@ const RegisterPage = () => {
 
   const [passwordVisibility, setPasswordVisibility] = useState(true);
   const [rePasswordVisibility, setRePasswordVisibility] = useState(true);
-  
+
   const renderPasswordIcon = (isVisible, toggleVisibility) => (
     <TouchableOpacity onPress={toggleVisibility} style={styles.eyeIcon}>
       <Icon name={isVisible ? 'eye' : 'eye-slash'} size={20} color="grey" />
@@ -27,7 +27,7 @@ const RegisterPage = () => {
   const togglePasswordVisibility = () => {
     setPasswordVisibility(!passwordVisibility);
   };
-  
+
   const toggleRePasswordVisibility = () => {
     setRePasswordVisibility(!rePasswordVisibility);
   };
@@ -50,9 +50,9 @@ const RegisterPage = () => {
       setEmailError(''); // Reset email error
       return;
     }
-  
+
     createUserWithEmailAndPassword(auth, email, password)
-    .then(userCredentials => {
+      .then(userCredentials => {
         const user = userCredentials.user;
         console.log('Logged in with:', user.email);
         navigation.replace("Account");
@@ -66,88 +66,88 @@ const RegisterPage = () => {
         setPasswordMismatch(false); // Reset password mismatch error
         setEmailError(''); // Reset other email errors
       });
-      
-  
+
+
     console.log(`Email: ${email}, Password: ${password}`);
-    
+
   }
 
   return (
-    <KeyboardAvoidingView style={styles.container} behavior="height"           
-    onStartShouldSetResponder={() => Keyboard.dismiss()}
-  >
-    <View style={styles.container}>
-      <Image source={logo} style={styles.mainlogo} />
-      <View style={styles.logoContainer}>
-        <Text style={styles.textstyle}>
-          Advanced Utilization System for Tracking Insights and Numbers
-        </Text>
-      </View>
-      <View style={styles.inputContainer}>
-        
-        <TextInput
-          placeholder="Email"
-          value={email}
-          onChangeText={text => {
-            setEmail(text);
-            setEmailError(''); // Reset email error when typing
-          }}
-          style={[
-            styles.input,
-            emailError && styles.inputError // Apply the error style when there's an email error
-          ]}
-        />
-        {emailError ? (
-          <Text style={styles.errorText}>{emailError}</Text>
-        ) : null}
-  <View style={styles.passwordInputContainer}>
-          <TextInput
-            placeholder="Enter Password"
-            value={password}
-            onChangeText={text => setPassword(text)}
-            style={styles.input}
-            secureTextEntry={!passwordVisibility}
-          />
-          {renderPasswordIcon(passwordVisibility, togglePasswordVisibility)}
+    <KeyboardAvoidingView style={styles.container} behavior="height"
+      onStartShouldSetResponder={() => Keyboard.dismiss()}
+    >
+      <View style={styles.container}>
+        <Image source={logo} style={styles.mainlogo} />
+        <View style={styles.logoContainer}>
+          <Text style={styles.textstyle}>
+            Advanced Utilization System for Tracking Insights and Numbers
+          </Text>
         </View>
-        <View style={styles.passwordInputContainer}>
+        <View style={styles.inputContainer}>
+
           <TextInput
-            placeholder="Re-enter Password"
-            value={rePassword}
-            onChangeText={text => setRePassword(text)}
+            placeholder="Email"
+            value={email}
+            onChangeText={text => {
+              setEmail(text);
+              setEmailError(''); // Reset email error when typing
+            }}
             style={[
               styles.input,
-              passwordMismatch && styles.inputError
+              emailError && styles.inputError // Apply the error style when there's an email error
             ]}
-            secureTextEntry={!rePasswordVisibility}
           />
-          {renderPasswordIcon(rePasswordVisibility, toggleRePasswordVisibility)}
+          {emailError ? (
+            <Text style={styles.errorText}>{emailError}</Text>
+          ) : null}
+          <View style={styles.passwordInputContainer}>
+            <TextInput
+              placeholder="Enter Password"
+              value={password}
+              onChangeText={text => setPassword(text)}
+              style={styles.input}
+              secureTextEntry={!passwordVisibility}
+            />
+            {renderPasswordIcon(passwordVisibility, togglePasswordVisibility)}
+          </View>
+          <View style={styles.passwordInputContainer}>
+            <TextInput
+              placeholder="Re-enter Password"
+              value={rePassword}
+              onChangeText={text => setRePassword(text)}
+              style={[
+                styles.input,
+                passwordMismatch && styles.inputError
+              ]}
+              secureTextEntry={!rePasswordVisibility}
+            />
+            {renderPasswordIcon(rePasswordVisibility, toggleRePasswordVisibility)}
+          </View>
+          {passwordMismatch && (
+            <Text style={styles.errorText}>Password don't match</Text>
+          )}
+          {emailAlreadyInUse && (
+            <Text style={styles.errorText}>This email is already registered</Text>
+          )}
         </View>
-        {passwordMismatch && (
-          <Text style={styles.errorText}>Password don't match</Text>
-        )}
-                {emailAlreadyInUse && (
-          <Text style={styles.errorText}>This email is already registered</Text>
-        )}
-      </View>
 
-      <View style={styles.loginContainer}>
-        <TouchableOpacity
-          onPress={handleRegister}
-          style={styles.button}
-        >
-          <Text style={styles.buttonText}>Register</Text>
-        </TouchableOpacity>
+        <View style={styles.loginContainer}>
+          <TouchableOpacity
+            onPress={handleRegister}
+            style={styles.button}
+          >
+            <Text style={styles.buttonText}>Register</Text>
+          </TouchableOpacity>
+        </View>
+        <View style={styles.registerContainer}>
+          <Text style={styles.text}>Already have an account?</Text>
+          <TouchableOpacity
+            onPress={() => navigation.replace("Login")}
+          >
+            <Text style={styles.registerText}>Login</Text>
+          </TouchableOpacity>
+        </View>
       </View>
-      <View style={styles.registerContainer}>
-        <Text style={styles.text}>Already have an account?</Text>
-        <TouchableOpacity
-          onPress={() => navigation.replace("Login")}
-        >
-          <Text style={styles.registerText}>Login</Text>
-        </TouchableOpacity>
-      </View>
-    </View>
     </KeyboardAvoidingView>
 
   )
@@ -171,7 +171,7 @@ const styles = StyleSheet.create({
     padding: 15,
   },
   passwordInputContainer: {
-    position: 'relative', 
+    position: 'relative',
   },
   input: {
     backgroundColor: AppStyles.color.primary,
@@ -184,7 +184,7 @@ const styles = StyleSheet.create({
     color: 'red',
     fontSize: 14,
     marginTop: 5,
-    paddingLeft:10,
+    paddingLeft: 10,
   },
   loginContainer: {
     width: '50%',
@@ -239,7 +239,6 @@ const styles = StyleSheet.create({
   textstyle: {
     textAlign: 'center',
     fontSize: 17,
-    fontFamily: 'Archivo',
     fontWeight: 'bold',
   }
 });

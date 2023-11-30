@@ -63,13 +63,12 @@ def hello_world():
 @app.route('/generate_forecast', methods=['POST'])
 def generate_forecast():
     try:
-        csvFile = request.files.get('csvFile', None)
+        csvFile = request.files.get('csvFile')
         if csvFile is None:
             abort(400, description="CSV file is missing")
 
         data = uploadCSV(csvFile)
-
-        period = int(request.form.get('period', 6))
+        period = 6
         if period <= 0:
             abort(400, description="Invalid period value")
 

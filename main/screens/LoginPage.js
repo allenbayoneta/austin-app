@@ -151,7 +151,6 @@ const styles = StyleSheet.create({
   textstyle: {
     textAlign: 'center',
     fontSize: 17,
-    fontFamily: 'Archivo',
     fontWeight: 'bold',
   }
 });

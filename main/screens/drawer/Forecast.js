@@ -6,6 +6,7 @@ import {
   Dimensions,
   ScrollView,
   ActivityIndicator,
+  Alert
 } from "react-native";
 import { auth, storage } from "../../src/firebase";
 import AppStyles from "../../constants/AppStyles";
@@ -49,8 +50,8 @@ const ForecastPage = () => {
     checkCsvFile();
   };
   const generateForecast = async (filePath) => {
-    const apiUrl = 'http://127.0.0.1:5000/generate_forecast';
-
+    const apiUrl = 'https://allenbayonetea.pythonanywhere.com/generate_forecast ';
+    // const apiUrl = 'http://localhost:5000/generate_forecast ';
     try {
       const formData = new FormData();
       const response = await fetch(filePath);
@@ -74,9 +75,11 @@ const ForecastPage = () => {
         return forecastValues;
       } else {
         console.error('API request failed with status:', apiResponse.status);
+        return null;
       }
     } catch (error) {
       console.error('Error:', error);
+      return null;
     }
   };
 
@@ -86,10 +89,12 @@ const ForecastPage = () => {
       const url = await getDownloadURL(storageRef);
       const response = await fetch(url);
       const csvText = await response.text();
-      const initalForecast = await generateForecast(url);
-      console.log(initalForecast);
+      const initialForecast = await generateForecast(url);
+      console.log(initialForecast);
 
-      console.log(loading);
+      if (initialForecast === null) {
+        return;
+      }
 
       const parsedData = readString(csvText, {
         hasHeader: true,
@@ -122,8 +127,8 @@ const ForecastPage = () => {
       };
 
       const combinedForecastData = {
-        labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun"],
-        datasets: [initalForecast],
+        labels: ["1st", "2nd", "3rd", "4th", "5th", "6th"],
+        datasets: [initialForecast],
       };
 
       console.log(combinedForecastData)
@@ -132,6 +137,7 @@ const ForecastPage = () => {
 
     } catch (error) {
       console.error("Error downloading or parsing CSV:", error);
+      Alert.alert('API Error', 'Failed to process forecast data from the server.');
     } finally {
       setLoading(false);
     }
@@ -146,6 +152,17 @@ const ForecastPage = () => {
     backgroundGradientFrom: "#fff",
     backgroundGradientTo: "#fff",
     color: (opacity = 1) => `rgba(104,66,239, ${opacity})`,
+  };
+
+  const formatXLabel = (label) => {
+    const dateParts = label.split("-");
+    const monthNumber = parseInt(dateParts[1], 10);
+    const monthNames = [
+      "Jan", "Feb", "Mar", "Apr", "May", "Jun",
+      "Jul", "Aug", "Sep", "Oct", "Nov", "Dec",
+    ];
+
+    return `${monthNames[monthNumber - 1]}`;
   };
 
   return (
@@ -207,25 +224,7 @@ const ForecastPage = () => {
                 height={300}
                 chartConfig={chartConfig}
                 bezier
-                formatXLabel={(label) => {
-                  const dateParts = label.split("-");
-                  const monthNames = [
-                    "Jan",
-                    "Feb",
-                    "Mar",
-                    "Apr",
-                    "May",
-                    "Jun",
-                    "Jul",
-                    "Aug",
-                    "Sep",
-                    "Oct",
-                    "Nov",
-                    "Dec",
-                  ];
-                  const month = parseInt(dateParts[1], 10) - 1;
-                  return `${monthNames[month]}`;
-                }}
+                formatXLabel={formatXLabel}
                 style={{
                   backgroundColor: "#fff",
                   borderRadius: 10,
@@ -241,6 +240,16 @@ const ForecastPage = () => {
                   elevation: 5,
                 }}
               />
+              <Table borderStyle={{ borderWidth: 2, borderColor: AppStyles.color.accent }}>
+                <Row data={['Month', 'Sales']} style={{ height: 40, backgroundColor: AppStyles.color.accent }} textStyle={{ margin: 6, fontWeight: 'bold', color: '#fff' }} />
+                <Rows
+                  data={chartData.labels.map((value, index) => ([
+                    formatXLabel(value),
+                    `${chartData.datasets[0].data[index].toFixed(2)}`
+                  ]))}
+                  textStyle={{ margin: 6 }}
+                />
+              </Table>
               {forecastData !== null ? (
                 <View style={{ marginTop: 30 }}>
                   <Text style={styles.headerText}>Forecast of 6 months</Text>
@@ -317,7 +326,7 @@ const styles = StyleSheet.create({
     borderStyle: "dashed",
     borderWidth: 2,
     borderRadius: 10,
-    width: "80%",
+    width: "90%",
   },
   messageContainer: {
     flex: 1,
@@ -337,7 +346,7 @@ const styles = StyleSheet.create({
   },
   uploadButton: {
     backgroundColor: AppStyles.color.accent,
-    width: "80%",
+    width: "90%",
     padding: 10,
     borderRadius: 10,
     alignItems: "center",

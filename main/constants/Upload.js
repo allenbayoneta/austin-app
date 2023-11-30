@@ -22,7 +22,7 @@ export default function UploadPicker({ isVisible, currentUser, onClose, folder }
   };
 
   const pickDocument = async () => {
-    let document = await DocumentPicker.getDocumentAsync();
+    let document = await DocumentPicker.getDocumentAsync({ type: "text/*" });
     if (document != null) {
       const response = await fetch(document.assets[0].uri);
       const blob = await response.blob();

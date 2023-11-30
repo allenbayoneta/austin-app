@@ -5,7 +5,7 @@ from statsmodels.tsa.statespace.sarimax import SARIMAX
 from flask_cors import CORS
 
 app = Flask(__name__)
-CORS(app, resources={r"/*": {"origins": "http://localhost:8081"}})
+CORS(app, resources={r"/*": {"origins": "*" }})
 
 
 def uploadCSV(csvFile):
@@ -55,6 +55,10 @@ def getForecast(data, period):
         return forecast.tolist()
     except Exception as e:
         abort(400, description="Failed to generate forecast")
+
+@app.route('/')
+def hello_world():
+    return 'API Server is running! "NoKap"'
 
 @app.route('/generate_forecast', methods=['POST'])
 def generate_forecast():

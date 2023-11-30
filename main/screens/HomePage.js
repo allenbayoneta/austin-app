@@ -1,5 +1,4 @@
 import {
-
   SafeAreaView,
   Image,
   Pressable,
@@ -10,9 +9,6 @@ import { useNavigation } from "@react-navigation/core";
 import AppStyles from "../constants/AppStyles";
 import Icon from "../assets/profile_pic.png";
 import DashboardPage from "./drawer/Dashboard";
-// import ExpensesPage from "./drawer/Expenses";
-// import IncomePage from "./drawer/Income";
-// import TransactionPage from "./drawer/ViewTransac";
 import { Modal, View, Text, TouchableHighlight, StyleSheet } from 'react-native';
 import ForecastPage from "./drawer/Forecast";
 import SettingsPage from "./drawer/Settings";
@@ -24,9 +20,8 @@ import {
 import { SimpleLineIcons, MaterialIcons } from "@expo/vector-icons";
 import { auth, database } from "../src/firebase";
 import { ref, get } from "firebase/database";
-import { launchImageLibrary } from 'react-native-image-picker';
 import { ref as storageRef, uploadBytes, getDownloadURL } from 'firebase/storage';
-import { storage } from '../src/firebase'; // Assuming storage is exported from firebase.js
+import { storage } from '../src/firebase';
 import { update } from 'firebase/database';
 
 const Drawer = createDrawerNavigator();
@@ -34,7 +29,7 @@ const Drawer = createDrawerNavigator();
 const HomePage = () => {
   const navigation = useNavigation();
   const [userData, setUserData] = useState(null);
-  const [blobFile, setBlobFile] = useState(null);
+  //const [blobFile, setBlobFile] = useState(null);
 
   useEffect(() => {
     const user = auth.currentUser;
@@ -68,9 +63,9 @@ const HomePage = () => {
       let result = await DocumentPicker.getDocumentAsync({
         type: 'image/*',
       });
-  
-      console.log("Document Picker Result: ", result); // Detailed logging of the result
-  
+
+      console.log("Document Picker Result: ", result);
+
       if (result.type !== 'cancel' && result.assets && result.assets.length > 0) {
         const selectedFile = result.assets[0];
         console.log("Selected image URI: ", selectedFile.uri);
@@ -82,7 +77,7 @@ const HomePage = () => {
       console.error("Error picking document:", error);
     }
   };
-  
+
   const uploadImage = async (uri) => {
     const user = auth.currentUser;
     if (!user) {
@@ -111,28 +106,22 @@ const HomePage = () => {
     }
   };
 
-
-
-  const MyModal = () => {
-    const [modalVisible, setModalVisible] = useState(false);
-  };
-
   return (
     <Drawer.Navigator
       drawerContent={(props) => {
         return (
           <SafeAreaView>
-          <View style={styles.drawerItems}>
-          <TouchableHighlight style={styles.profilePic} onPress={changeProfilePic}>
-  <Image
-    source={
-      userData && userData.profilePic
-        ? { uri: userData.profilePic }  // Remote URI
-        : Icon // Local image
-    }
-    style={styles.profilePic}
-  />
-</TouchableHighlight>
+            <View style={styles.drawerItems}>
+              <TouchableHighlight style={styles.profilePic} onPress={changeProfilePic}>
+                <Image
+                  source={
+                    userData && userData.profilePic
+                      ? { uri: userData.profilePic }
+                      : Icon
+                  }
+                  style={styles.profilePic}
+                />
+              </TouchableHighlight>
               {userData ? (
                 <>
                   <Text style={styles.username}>
@@ -145,8 +134,8 @@ const HomePage = () => {
             <DrawerItemList {...props} />
             <View style={styles.logoutContainer}>
               <Pressable style={styles.logoutButton} onPress={handleLogout}>
-                <MaterialIcons name="logout" color="#c93756" size={22} />
-                <Text style={{ fontSize: 16, fontWeight: "bold", marginLeft: 25, color: "#c93756" }}>Logout</Text>
+                <MaterialIcons name="logout" color="#6842ef" size={22} />
+                <Text style={{ fontSize: 16, fontWeight: "bold", marginLeft: 25, color: "#6842ef" }}>Logout</Text>
               </Pressable>
             </View>
           </SafeAreaView>
@@ -180,39 +169,6 @@ const HomePage = () => {
         }}
         component={DashboardPage}
       />
-      {/* <Drawer.Screen
-        name="View Transaction"
-        options={{
-          drawerLabel: "View Transaction",
-          title: "View Transaction",
-          drawerIcon: () => (
-            <MaterialIcons name="poll" size={20} color="#808080" />
-          ),
-        }}
-        component={TransactionPage}
-      />
-      <Drawer.Screen
-        name="Expenses"
-        options={{
-          drawerLabel: "Expenses",
-          title: "Expenses",
-          drawerIcon: () => (
-            <MaterialIcons name="payments" size={20} color="#808080" />
-          ),
-        }}
-        component={ExpensesPage}
-      />
-      <Drawer.Screen
-        name="Income"
-        options={{
-          drawerLabel: "Income",
-          title: "Income",
-          drawerIcon: () => (
-            <MaterialIcons name="attach-money" size={20} color="#808080" />
-          ),
-        }}
-        component={IncomePage}
-      /> */}
       <Drawer.Screen
         name="Forecast"
         options={{
@@ -253,7 +209,7 @@ const styles = StyleSheet.create({
     backgroundColor: AppStyles.color.background,
   },
   drawerItems: {
-    height: "50%",
+    height: "60%",
     width: "100%",
     justifyContent: "center",
     alignItems: "center",
@@ -278,7 +234,6 @@ const styles = StyleSheet.create({
   logoutContainer: {
     marginLeft: 20,
     marginTop: 40,
-    //flexDirection: "row",
   },
   logoutButton: {
     flexDirection: "row",

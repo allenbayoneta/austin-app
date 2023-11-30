@@ -17,6 +17,7 @@ import { readString } from "react-native-csv";
 import { LineChart } from "react-native-chart-kit";
 import { ref, getDownloadURL } from "firebase/storage";
 import { Table, Row, Rows } from 'react-native-table-component';
+import Constants from 'expo-constants';
 
 const ForecastPage = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -51,15 +52,27 @@ const ForecastPage = () => {
   };
   const generateForecast = async (filePath) => {
     const apiUrl = 'https://allenbayonetea.pythonanywhere.com/generate_forecast ';
-    // const apiUrl = 'http://localhost:5000/generate_forecast ';
+    //const apiUrl = 'http://localhost:5000/generate_forecast ';
     try {
       const formData = new FormData();
       const response = await fetch(filePath);
       const blob = await response.blob();
 
-      formData.append('csvFile', blob, 'forecast.csv');
-      formData.append('period', '6');
-      console.log(formData)
+      if (Constants.platform.web) {
+        formData.append('csvFile', blob, 'forecast.csv');
+      } else if (Constants.platform.android || Constants.platform.ios) {
+        formData.append('csvFile', {
+          uri: filePath,
+          name: 'forecast.csv',
+          type: 'text/csv',
+          data: blob,
+        });
+      } else {
+        console.error('Unsupported platform');
+        return null;
+      }
+
+      console.log(formData);
 
       const apiResponse = await fetch(apiUrl, {
         method: 'POST',

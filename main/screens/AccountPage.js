@@ -1,9 +1,11 @@
 import { useNavigation } from '@react-navigation/core'
-import { KeyboardAvoidingView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
+import { KeyboardAvoidingView, StyleSheet, Text, TextInput, TouchableOpacity, View, Image } from 'react-native'
 import React, { useState, useEffect } from 'react'
 import AppStyles from '../constants/AppStyles'
 import { auth, database, storage } from '../src/firebase'
 import { ref, set, get, uploadString, getDownloadURL} from 'firebase/database'
+import logo from '../assets/Au10GIF.png'
+import { Platform, Keyboard } from 'react-native';
 
 const AccountPage = () => {
     const [firstName, setFirstName] = useState('')
@@ -38,26 +40,6 @@ const AccountPage = () => {
         }
     }, []);
 
-    const handleImagePicker = () => {
-        const options = {
-            title: 'Select Profile Picture',
-            storageOptions:{
-                skipBackup: true,
-                path:'images',
-            }
-        }
-
-        ImagePicker.showImagePicker(options, (response) => {
-            if (response.didCancel){
-                console.log('User cancelled');
-            } else if(response.error){
-                console.log('ImagePicker Error: ', response.error);
-            } else {
-                setProfileImage(response.uri);
-            }
-            })
-        }
-
     const handleDetails = async () => {
         try {
             const userRef = ref(database, 'users/' + userUid);
@@ -70,16 +52,7 @@ const AccountPage = () => {
             };
 
             await set(userRef, updatedUserDetails);
-
-            if (profileImage){
-                const imageRef = storage.ref().child(`profile_images/${userUid}`);
-                await uploadString(imageRef, profileImage, 'data_url');
-                const imageUrl = await getDownloadURL(imageRef);
-                // Update user profile image URL in the database
-                await set(userRef, { ...updatedUserDetails, profileImage: imageUrl }, { merge: true });
-            }
             navigation.replace('Home');
-
         } catch (error) {
             setError('Error updating user details');
             console.log(error.message)
@@ -87,16 +60,15 @@ const AccountPage = () => {
     };
 
     return (
-        <View style={styles.container}>
-            <View style={styles.logoContainer}>
-                <Text>
-                    Account Details
-                </Text>
-            </View>
-            {profileImage && <Image source={{ uri: profileImage }} style={styles.profileImage} />} 
-            <TouchableOpacity onPress={handleImagePicker} style={styles.imagePickerButton}>
-                <Text>Select Profile Picture</Text>
-            </TouchableOpacity>
+        <KeyboardAvoidingView style={styles.container} behavior="height"           
+        onStartShouldSetResponder={() => Keyboard.dismiss()}
+      >        
+      <Image source={logo} style={styles.mainlogo} />
+      <View style={styles.logoContainer}>
+    <Text>
+        Account Details
+    </Text>
+</View>
             <View style={styles.inputContainer}>
                 <TextInput
                     placeholder="First Name"
@@ -134,7 +106,7 @@ const AccountPage = () => {
                     <Text style={styles.buttonText}>Save Details</Text>
                 </TouchableOpacity>
             </View>
-        </View>
+            </KeyboardAvoidingView>
     )
 }
 
@@ -202,4 +174,10 @@ const styles = StyleSheet.create({
         borderColor: 'red',
         borderWidth: 1,
     },
+    mainlogo: {
+        height: 130,
+        width: 130,
+        borderRadius: 100,
+        alignItems: 'baseline',
+      },
 });

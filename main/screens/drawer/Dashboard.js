@@ -26,8 +26,17 @@ const DashboardPage = () => {
   const [expense, setExpense] = useState(null);
   const [balance, setBalance] = useState(null);
   const [transactions, setTransactions] = useState([]);
+  const [selectedMonths, setSelectedMonths] = useState(6); // Default to the last 6 months
 
 
+  const filteredTransactions = transactions.slice(-selectedMonths);
+
+  // Extract labels (months) and data (income and expense) for the line chart
+  const chartLabels = filteredTransactions.map((transaction) => transaction.date);
+  const chartDataIncome = filteredTransactions.map((transaction) => parseFloat(transaction.type === "income" ? transaction.amount.replace(/,/g, '') : 0));
+  const chartDataExpense = filteredTransactions.map((transaction) =>
+  parseFloat(transaction.type === "expense" ? transaction.amount.replace(/,/g, '') : 0)
+);
   const user = auth.currentUser;
   const file = 'dashboard'
 
@@ -117,54 +126,40 @@ const DashboardPage = () => {
       .slice(startIndex, endIndex);
     return filteredTransactions;
   };
-
   const goToNextPage = () => {
     setCurrentPage((page) => (page < pageCount ? page + 1 : page));
   };
-
+  
   const goToPreviousPage = () => {
     setCurrentPage((page) => (page > 1 ? page - 1 : page));
   };
 
   const chartConfig = {
-    backgroundGradientFrom: '#1E2923',
-    backgroundGradientFromOpacity: 0,
-    backgroundGradientTo: '#08130D',
-    backgroundGradientToOpacity: 0.5,
+    backgroundGradientFrom: 'rgba(0, 0, 0, 0)', // Transparent background
+    backgroundGradientTo: 'rgba(0, 0, 0, 0)', // Transparent background
     color: (opacity = 1) => `rgba(26, 255, 146, ${opacity})`,
-    strokeWidth: 2, // optional, default 3
+    strokeWidth: 2,
     barPercentage: 0.5,
-    useShadowColorFromDataset: false, // optional
-  };
-
-  const calculatePercentage = (value, total) => {
-    return total > 0 ? ((value / total) * 100).toFixed(2) : 0;
-  };
-
-  const totalAmount = () => {
-    const incomeValue = income ? parseFloat(income.replace(/,/g, '')) : 0;
-    const expenseValue = expense ? parseFloat(expense.replace(/,/g, '')) : 0;
-    return incomeValue + expenseValue;
+    useShadowColorFromDataset: false,
   };
 
   const data = [
     {
-      name: `${calculatePercentage(income ? parseFloat(income.replace(/,/g, '')) : 0, totalAmount())}%`,
+      name: 'Income',
       amount: income ? parseFloat(income.replace(/,/g, '')) : 0,
       color: '#6842ef',
       legendFontColor: '#000',
-      legendFontSize: 12,
+      legendFontSize: 10,
     },
     {
-      name: `${calculatePercentage(expense ? parseFloat(expense.replace(/,/g, '')) : 0, totalAmount())}%`,
+      name: 'Expenses',
       amount: expense ? parseFloat(expense.replace(/,/g, '')) : 0,
       color: '#4172ef',
       legendFontColor: '#000',
-      legendFontSize: 12,
+      legendFontSize: 10,
     },
   ];
 
-  
 
   const screenWidth = Dimensions.get('window').width;
 
@@ -218,7 +213,7 @@ const DashboardPage = () => {
           folder={file}
         />
         {csvFileExists ? (
-          <View style={{ marginVertical: 10, width: '100%' }}>
+          <View style={{ marginVertical: 30, width: '100%' }}>
             <View style={styles.Frow}>
               <View style={styles.FrowBalContainer}>
                 <Text style={styles.balText}>Current Balance</Text>
@@ -245,7 +240,6 @@ const DashboardPage = () => {
                   backgroundColor={'transparent'}
                   paddingLeft={'5'}
                   center={[10, 10]}
-                  absolute
                 />
               </View>
               {/* <View style={styles.pieContainer}>
@@ -263,6 +257,44 @@ const DashboardPage = () => {
                 />
               </View> */}
             </View>
+            {Platform.OS === 'web' && (
+          <View style={styles.lineChartContainer}>
+            <Text style={styles.chartHeaderText}>Income vs Expense</Text>
+            <Picker
+              selectedValue={selectedMonths}
+              style={styles.pickerStyle}
+              onValueChange={(itemValue, itemIndex) => setSelectedMonths(itemValue)}>
+              <Picker.Item label="Last 6 months" value={6} />
+              <Picker.Item label="Last 12 months" value={12} />
+              {/* Add more options if needed */}
+            </Picker>
+            <ScrollView
+              horizontal
+              contentContainerStyle={{ paddingHorizontal: 16 }}
+              showsHorizontalScrollIndicator={false}>
+              <LineChart
+                data={{
+                  labels: chartLabels,
+                  datasets: [
+                    {
+                      data: chartDataIncome,
+                      color: (opacity = 1) => `rgba(26, 255, 146, ${opacity})`,
+                      strokeWidth: 2,
+                    },
+                    {
+                      data: chartDataExpense,
+                      color: (opacity = 1) => `rgba(255, 0, 0, ${opacity})`,
+                      strokeWidth: 2,
+                    },
+                  ],
+                }}
+                width={Dimensions.get('window').width * 0.9} // Adjust the width based on screen width
+                height={220} // Adjust the height as needed
+                chartConfig={chartConfig}
+              />
+            </ScrollView>
+          </View>
+        )}
             <View style={styles.Trow}>
               {csvFileExists && transactions.length > 0 && (
                 <View style={styles.tableContainer}>
@@ -319,7 +351,7 @@ const DashboardPage = () => {
             </View>
           </View>
         ) : (
-          <Text style={[styles.messageText, { marginVertical: 30, padding: 10 }]}>Visualizations will be here. Please upload a CSV file with proper format.</Text>
+          <Text style={[styles.messageText, { marginVertical: 30 }]}>Visualizations will be here. Please upload a CSV file with proper format.</Text>
         )}
         <View style={styles.uploadContainer}>
           <View style={styles.messageContainer}>
@@ -356,7 +388,7 @@ const styles = StyleSheet.create({
     padding: 16,
     paddingTop: 30,
     backgroundColor: 'transparent',
-    maxHeight: '100%',
+    maxHeight: '100%', // Set a maximum height to occupy available space
   },
   paginationButton: {
     backgroundColor: AppStyles.color.accent,
@@ -488,7 +520,7 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
     alignItems: 'center',
     justifyContent: 'center',
-    width: "90%",
+    width: "80%",
     alignSelf: 'center',
     marginVertical: 20,
   },
@@ -509,7 +541,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 4,
     elevation: 5,
-    width: width < 600 ? '90%' : width * 0.25,
+    width: width < 600 ? '80%' : width * 0.20,
     height: 120, // Set width based on screen width
     marginBottom: 10, // Add margin at the bottom for spacing
   },
@@ -530,7 +562,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 4,
     elevation: 5,
-    width: width < 600 ? '90%' : width * 0.25, // Set width based on screen width
+    width: width < 600 ? '80%' : width * 0.20, // Set width based on screen width
     height: 120,
     marginBottom: 10, // Add margin at the bottom for spacing
   },
@@ -578,7 +610,7 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
     alignItems: 'center',
     justifyContent: 'center',
-    width: "90%",
+    width: "80%",
     alignSelf: 'center',
     marginVertical: 20,
   },
@@ -586,9 +618,9 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     marginRight: 10,
     marginLeft: 10,
-    paddingHorizontal: '175%',
-    paddingVertical: '120%',
-
+    paddingHorizontal: 175, // Updated to numeric value
+    paddingVertical: 120, // Updated to numeric value
+    borderRadius: 20,
   },
   Trow: {
     flexDirection: 'row',
@@ -603,6 +635,25 @@ const styles = StyleSheet.create({
     padding: 16,
     paddingTop: 30,
     backgroundColor: 'transparent', // Set the background to transparent
+  },
+  lineChartContainer: {
+    margin: 5,
+    padding: 20,
+    borderWidth: 1,
+    borderRadius: 20,
+    shadowColor: "#000",
+    flexDirection: 'column',
+    justifyContent: 'space-evenly',
+    backgroundColor: AppStyles.color.primary,
+    borderColor: AppStyles.color.primary,
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+    width: width < 600 ? '100%' : '100%' ,
   },
   filterContainer: {
     // Adjust the styling according to your app's theme

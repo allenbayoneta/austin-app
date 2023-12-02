@@ -1,10 +1,10 @@
 {
   "expo": {
-    "name": "main",
+    "name": "AUSTIN",
     "slug": "main",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/austin-icon.png",
     "userInterfaceStyle": "light",
     "splash": {
       "image": "./assets/splash.png",
@@ -31,6 +31,11 @@
     "web": {
       "favicon": "./assets/favicon.png",
       "bundler": "metro"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "261cbe5b-573c-44bc-bb5c-1dc60e723bef"
+      }
     }
   }
 }

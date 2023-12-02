@@ -9,7 +9,7 @@ import { useNavigation } from "@react-navigation/core";
 import AppStyles from "../constants/AppStyles";
 import Icon from "../assets/profile_pic.png";
 import DashboardPage from "./drawer/Dashboard";
-import { Modal, View, Text, TouchableHighlight, StyleSheet } from 'react-native';
+import { View, Text, TouchableHighlight, StyleSheet } from 'react-native';
 import ForecastPage from "./drawer/Forecast";
 import SettingsPage from "./drawer/Settings";
 import "react-native-gesture-handler";
@@ -29,7 +29,6 @@ const Drawer = createDrawerNavigator();
 const HomePage = () => {
   const navigation = useNavigation();
   const [userData, setUserData] = useState(null);
-  //const [blobFile, setBlobFile] = useState(null);
 
   useEffect(() => {
     const user = auth.currentUser;
@@ -56,7 +55,6 @@ const HomePage = () => {
       console.error("Error logging out:", error);
     }
   };
-
 
   const changeProfilePic = async () => {
     try {

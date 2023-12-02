@@ -5,7 +5,6 @@ import {
   Text, TextInput,
   Dimensions,
   ScrollView,
-  ActivityIndicator,
 } from "react-native";
 import { auth, storage } from "../../src/firebase";
 import AppStyles from "../../constants/AppStyles";
@@ -26,20 +25,16 @@ const DashboardPage = () => {
   const [expense, setExpense] = useState(null);
   const [balance, setBalance] = useState(null);
   const [transactions, setTransactions] = useState([]);
-  const [selectedMonths, setSelectedMonths] = useState(6); // Default to the last 6 months
-
+  const [selectedMonths, setSelectedMonths] = useState(6);
 
   const filteredTransactions = transactions.slice(-selectedMonths);
-
-  // Extract labels (months) and data (income and expense) for the line chart
   const chartLabels = filteredTransactions.map((transaction) => transaction.date);
   const chartDataIncome = filteredTransactions.map((transaction) => parseFloat(transaction.type === "income" ? transaction.amount.replace(/,/g, '') : 0));
   const chartDataExpense = filteredTransactions.map((transaction) =>
-  parseFloat(transaction.type === "expense" ? transaction.amount.replace(/,/g, '') : 0)
-);
+    parseFloat(transaction.type === "expense" ? transaction.amount.replace(/,/g, '') : 0)
+  );
   const user = auth.currentUser;
   const file = 'dashboard'
-
 
   const onModalClose = () => {
     setIsModalVisible(false);
@@ -92,13 +87,11 @@ const DashboardPage = () => {
 
   const [enteredPage, setEnteredPage] = useState('');
   const navigateToPage = () => {
-    // Ensure that the entered page is a number within the page count range
     const pageNumber = Number(enteredPage.trim());
     if (!isNaN(pageNumber) && pageNumber >= 1 && pageNumber <= pageCount) {
       setCurrentPage(pageNumber);
-      setEnteredPage(''); // Clear the input field
+      setEnteredPage('');
     } else {
-      // Handle error for invalid input or page number out of range
       alert(`Enter a number between 1 and ${pageCount}`);
     }
   };
@@ -108,7 +101,7 @@ const DashboardPage = () => {
   const handleFocus = () => setIsFocused(true);
   const handleBlur = () => {
     setIsFocused(false);
-    setEnteredPage(currentPage.toString()); // Reset enteredPage to currentPage when not focused
+    setEnteredPage(currentPage.toString());
   };
 
   const pageCount = Math.ceil(transactions.length / itemsPerPage);
@@ -129,14 +122,14 @@ const DashboardPage = () => {
   const goToNextPage = () => {
     setCurrentPage((page) => (page < pageCount ? page + 1 : page));
   };
-  
+
   const goToPreviousPage = () => {
     setCurrentPage((page) => (page > 1 ? page - 1 : page));
   };
 
   const chartConfig = {
-    backgroundGradientFrom: 'rgba(0, 0, 0, 0)', // Transparent background
-    backgroundGradientTo: 'rgba(0, 0, 0, 0)', // Transparent background
+    backgroundGradientFrom: 'rgba(0, 0, 0, 0)',
+    backgroundGradientTo: 'rgba(0, 0, 0, 0)',
     color: (opacity = 1) => `rgba(26, 255, 146, ${opacity})`,
     strokeWidth: 2,
     barPercentage: 0.5,
@@ -159,11 +152,6 @@ const DashboardPage = () => {
       legendFontSize: 10,
     },
   ];
-
-
-  const screenWidth = Dimensions.get('window').width;
-
-
 
   const downloadAndParseCSV = async () => {
     try {
@@ -196,7 +184,6 @@ const DashboardPage = () => {
       console.error("Error downloading or parsing CSV:", error);
     }
   };
-
 
   useEffect(() => {
     checkCsvFile();
@@ -242,59 +229,45 @@ const DashboardPage = () => {
                   center={[10, 10]}
                 />
               </View>
-              {/* <View style={styles.pieContainer}>
-                <Text style={styles.chartHeaderText}>Sales Breakdown</Text>
-                <PieChart
-                  data={data}
-                  width={width * 0.3} // Make sure the width is correct
-                  height={150} // Adjust height if necessary
-                  chartConfig={chartConfig}
-                  accessor={'amount'}
-                  backgroundColor={'transparent'}
-                  paddingLeft={'10'}
-                  center={[10, 10]} // Adjust the centering if necessary
-                  absolute
-                />
-              </View> */}
             </View>
             {Platform.OS === 'web' && (
-          <View style={styles.lineChartContainer}>
-            <Text style={styles.chartHeaderText}>Income vs Expense</Text>
-            <Picker
-              selectedValue={selectedMonths}
-              style={styles.pickerStyle}
-              onValueChange={(itemValue, itemIndex) => setSelectedMonths(itemValue)}>
-              <Picker.Item label="Last 6 months" value={6} />
-              <Picker.Item label="Last 12 months" value={12} />
-              {/* Add more options if needed */}
-            </Picker>
-            <ScrollView
-              horizontal
-              contentContainerStyle={{ paddingHorizontal: 16 }}
-              showsHorizontalScrollIndicator={false}>
-              <LineChart
-                data={{
-                  labels: chartLabels,
-                  datasets: [
-                    {
-                      data: chartDataIncome,
-                      color: (opacity = 1) => `rgba(26, 255, 146, ${opacity})`,
-                      strokeWidth: 2,
-                    },
-                    {
-                      data: chartDataExpense,
-                      color: (opacity = 1) => `rgba(255, 0, 0, ${opacity})`,
-                      strokeWidth: 2,
-                    },
-                  ],
-                }}
-                width={Dimensions.get('window').width * 0.9} // Adjust the width based on screen width
-                height={220} // Adjust the height as needed
-                chartConfig={chartConfig}
-              />
-            </ScrollView>
-          </View>
-        )}
+              <View style={styles.lineChartContainer}>
+                <Text style={styles.chartHeaderText}>Income vs Expense</Text>
+                <Picker
+                  selectedValue={selectedMonths}
+                  style={styles.pickerStyle}
+                  onValueChange={(itemValue, itemIndex) => setSelectedMonths(itemValue)}>
+                  <Picker.Item label="Last 6 months" value={6} />
+                  <Picker.Item label="Last 12 months" value={12} />
+                  {/* Add more options if needed */}
+                </Picker>
+                <ScrollView
+                  horizontal
+                  contentContainerStyle={{ paddingHorizontal: 16 }}
+                  showsHorizontalScrollIndicator={false}>
+                  <LineChart
+                    data={{
+                      labels: chartLabels,
+                      datasets: [
+                        {
+                          data: chartDataIncome,
+                          color: (opacity = 1) => `rgba(26, 255, 146, ${opacity})`,
+                          strokeWidth: 2,
+                        },
+                        {
+                          data: chartDataExpense,
+                          color: (opacity = 1) => `rgba(255, 0, 0, ${opacity})`,
+                          strokeWidth: 2,
+                        },
+                      ],
+                    }}
+                    width={Dimensions.get('window').width * 0.9}
+                    height={220}
+                    chartConfig={chartConfig}
+                  />
+                </ScrollView>
+              </View>
+            )}
             <View style={styles.Trow}>
               {csvFileExists && transactions.length > 0 && (
                 <View style={styles.tableContainer}>
@@ -325,7 +298,7 @@ const DashboardPage = () => {
                     </Pressable>
                     <TextInput
                       style={styles.pageInput}
-                      value={isFocused ? enteredPage : currentPage.toString()} // Display enteredPage when focused, otherwise currentPage
+                      value={isFocused ? enteredPage : currentPage.toString()}
                       onChangeText={setEnteredPage}
                       placeholder="Page No."
                       keyboardType="number-pad"
@@ -388,7 +361,7 @@ const styles = StyleSheet.create({
     padding: 16,
     paddingTop: 30,
     backgroundColor: 'transparent',
-    maxHeight: '100%', // Set a maximum height to occupy available space
+    maxHeight: '100%',
   },
   paginationButton: {
     backgroundColor: AppStyles.color.accent,
@@ -410,15 +383,13 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     padding: 8,
     marginHorizontal: 8,
-    width: 50, // You can adjust the width as needed
+    width: 50,
     textAlign: 'center',
   },
   tableHeader: {
     fontSize: 20,
     fontWeight: 'bold',
     color: AppStyles.color.accent,
-    // Remove paddingVertical if it's no longer necessary
-    // alignSelf: 'flex-start' is not needed anymore
   },
   head: { height: 40, backgroundColor: AppStyles.color.accent },
   text: { margin: 6, fontWeight: 'bold', color: '#fff' },
@@ -435,7 +406,6 @@ const styles = StyleSheet.create({
   },
   pickerStyle: {
     height: 30,
-    // Set a fixed width or use 'auto' for automatic adjustment based on content
     width: 100,
   },
   FrowChartContainer: {
@@ -445,7 +415,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-evenly',
     borderWidth: 1,
     borderRadius: 20,
-    backgroundColor: AppStyles.color.primary, // Set the background color similar to Current Balance
+    backgroundColor: AppStyles.color.primary,
     borderColor: AppStyles.color.primary,
     shadowColor: "#000",
     shadowOffset: {
@@ -455,8 +425,8 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 4,
     elevation: 5,
-    width: width < 600 ? '80%' : width * 0.20, // Adjust width based on screen width
-    height: 220, // Adjust height as necessary
+    width: width < 600 ? '80%' : width * 0.20,
+    height: 220,
     marginBottom: 10,
   },
   chartHeaderText: {
@@ -498,12 +468,12 @@ const styles = StyleSheet.create({
     flexDirection: "row",
   },
   summaryHeader: {
-    flexDirection: 'row', // Align children in a row
-    justifyContent: 'space-between', // Space between the text and the picker
-    alignItems: 'center', // Center items vertically
-    width: '100%', // Take full width to accommodate space between items
-    paddingHorizontal: 16, // Add horizontal padding if needed
-    marginBottom: 10, // Optional: Add margin at the bottom for spacing
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    width: '100%',
+    paddingHorizontal: 16,
+    marginBottom: 10,
   },
   buttonText: {
     color: "white",
@@ -520,9 +490,9 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
     alignItems: 'center',
     justifyContent: 'center',
-    width: "80%",
+    width: "90%",
     alignSelf: 'center',
-    marginVertical: 20,
+    marginVertical: 10,
   },
   FrowBalContainer: {
     marginHorizontal: 5,
@@ -541,9 +511,9 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 4,
     elevation: 5,
-    width: width < 600 ? '80%' : width * 0.20,
-    height: 120, // Set width based on screen width
-    marginBottom: 10, // Add margin at the bottom for spacing
+    width: width < 600 ? '90%' : width * 0.20,
+    height: 120,
+    marginBottom: 10,
   },
   FrowContainer: {
     marginHorizontal: 5,
@@ -562,9 +532,9 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 4,
     elevation: 5,
-    width: width < 600 ? '80%' : width * 0.20, // Set width based on screen width
+    width: width < 600 ? '90%' : width * 0.20,
     height: 120,
-    marginBottom: 10, // Add margin at the bottom for spacing
+    marginBottom: 10,
   },
   pieContainer: {
     margin: 5,
@@ -610,7 +580,7 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
     alignItems: 'center',
     justifyContent: 'center',
-    width: "80%",
+    width: "90%",
     alignSelf: 'center',
     marginVertical: 20,
   },
@@ -618,15 +588,15 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     marginRight: 10,
     marginLeft: 10,
-    paddingHorizontal: 175, // Updated to numeric value
-    paddingVertical: 120, // Updated to numeric value
+    paddingHorizontal: 175,
+    paddingVertical: 120,
     borderRadius: 20,
   },
   Trow: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    width: "100%", // Occupy the full width of the screen
+    width: "100%",
     alignSelf: 'center',
     marginVertical: 20,
   },
@@ -634,7 +604,7 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 16,
     paddingTop: 30,
-    backgroundColor: 'transparent', // Set the background to transparent
+    backgroundColor: 'transparent',
   },
   lineChartContainer: {
     margin: 5,
@@ -653,14 +623,11 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 4,
     elevation: 5,
-    width: width < 600 ? '100%' : '100%' ,
+    width: width < 600 ? '100%' : '100%',
   },
   filterContainer: {
-    // Adjust the styling according to your app's theme
     borderWidth: 1,
     borderColor: '#ccc',
     borderRadius: 4,
-    // The width can be set to auto or a fixed value depending on your design
   },
-
 })

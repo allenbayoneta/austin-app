@@ -46,10 +46,12 @@ const ForecastPage = () => {
   const onAddFile = () => {
     setIsModalVisible(true);
   };
+
   const onModalClose = () => {
     setIsModalVisible(false);
     checkCsvFile();
   };
+
   const generateForecast = async (filePath) => {
     const apiUrl = 'https://allenbayonetea.pythonanywhere.com/generate_forecast ';
     //const apiUrl = 'http://localhost:5000/generate_forecast ';
@@ -206,7 +208,7 @@ const ForecastPage = () => {
           <View style={{ marginVertical: 10, alignItems: "center" }}>
             <Text style={styles.messageText}>A file is available for forecasting.</Text>
             <Pressable
-              style={[styles.uploadButton, { marginTop: 10 }]}
+              style={[styles.predictButton, { marginTop: 10 }]}
               onPress={() => {
                 setLoading(true);
                 downloadAndParseCSV();
@@ -233,7 +235,7 @@ const ForecastPage = () => {
               <Text style={styles.headerText}>Last 12 Months</Text>
               <LineChart
                 data={chartData}
-                width={screenWidth - 120}
+                width={screenWidth - 70}
                 height={300}
                 chartConfig={chartConfig}
                 bezier
@@ -365,6 +367,14 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     flexDirection: "row",
+  },
+  predictButton: {
+    backgroundColor: AppStyles.color.accent,
+    width: "90%",
+    padding: 10,
+    borderRadius: 10,
+    alignItems: "center",
+    justifyContent: "center",
   },
   buttonText: {
     color: "white",

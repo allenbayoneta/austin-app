@@ -2,10 +2,10 @@ import { useNavigation } from '@react-navigation/core'
 import { KeyboardAvoidingView, StyleSheet, Text, TextInput, TouchableOpacity, View, Image } from 'react-native'
 import React, { useState, useEffect } from 'react'
 import AppStyles from '../constants/AppStyles'
-import { auth, database, storage } from '../src/firebase'
-import { ref, set, get, uploadString, getDownloadURL} from 'firebase/database'
+import { auth, database } from '../src/firebase'
+import { ref, set, get } from 'firebase/database'
 import logo from '../assets/Au10GIF.png'
-import { Platform, Keyboard } from 'react-native';
+import { Keyboard } from 'react-native';
 
 const AccountPage = () => {
     const [firstName, setFirstName] = useState('')
@@ -13,9 +13,8 @@ const AccountPage = () => {
     const [companyName, setCompanyName] = useState('')
     const [roleName, setRoleName] = useState('')
     const [userUid, setUserUid] = useState('');
-    const [profileImage, setProfileImage] = useState(null);
     const [error, setError] = useState(null);
-    
+
     const navigation = useNavigation()
 
     useEffect(() => {
@@ -60,15 +59,15 @@ const AccountPage = () => {
     };
 
     return (
-        <KeyboardAvoidingView style={styles.container} behavior="height"           
-        onStartShouldSetResponder={() => Keyboard.dismiss()}
-      >        
-      <Image source={logo} style={styles.mainlogo} />
-      <View style={styles.logoContainer}>
-    <Text>
-        Account Details
-    </Text>
-</View>
+        <KeyboardAvoidingView style={styles.container} behavior="height"
+            onStartShouldSetResponder={() => Keyboard.dismiss()}
+        >
+            <Image source={logo} style={styles.mainlogo} />
+            <View style={styles.logoContainer}>
+                <Text>
+                    Account Details
+                </Text>
+            </View>
             <View style={styles.inputContainer}>
                 <TextInput
                     placeholder="First Name"
@@ -106,7 +105,7 @@ const AccountPage = () => {
                     <Text style={styles.buttonText}>Save Details</Text>
                 </TouchableOpacity>
             </View>
-            </KeyboardAvoidingView>
+        </KeyboardAvoidingView>
     )
 }
 
@@ -179,5 +178,5 @@ const styles = StyleSheet.create({
         width: 130,
         borderRadius: 100,
         alignItems: 'baseline',
-      },
+    },
 });

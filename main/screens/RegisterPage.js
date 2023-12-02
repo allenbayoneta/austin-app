@@ -1,5 +1,5 @@
 import { useNavigation } from '@react-navigation/core'
-import { Alert, KeyboardAvoidingView, Keyboard, StyleSheet, Text, TextInput, TouchableOpacity, View, Image } from 'react-native'
+import { KeyboardAvoidingView, Keyboard, StyleSheet, Text, TextInput, TouchableOpacity, View, Image } from 'react-native'
 import React, { useState } from 'react'
 import AppStyles from '../constants/AppStyles'
 import { auth } from '../src/firebase'
@@ -12,10 +12,9 @@ const RegisterPage = () => {
   const [password, setPassword] = useState('')
   const [rePassword, setRePassword] = useState('')
   const [passwordMismatch, setPasswordMismatch] = useState(false);
-  const [emailError, setEmailError] = useState(''); // State for email validation error
+  const [emailError, setEmailError] = useState('');
   const navigation = useNavigation()
   const [emailAlreadyInUse, setEmailAlreadyInUse] = useState(false);
-
   const [passwordVisibility, setPasswordVisibility] = useState(true);
   const [rePasswordVisibility, setRePasswordVisibility] = useState(true);
 
@@ -39,7 +38,7 @@ const RegisterPage = () => {
   }
 
   const handleRegister = () => {
-    // Validate email format
+
     if (!validateEmail(email)) {
       setEmailError('Invalid email format');
       return;
@@ -47,7 +46,7 @@ const RegisterPage = () => {
 
     if (password !== rePassword) {
       setPasswordMismatch(true);
-      setEmailError(''); // Reset email error
+      setEmailError('');
       return;
     }
 
@@ -59,17 +58,15 @@ const RegisterPage = () => {
       })
       .catch(error => {
         if (error.code === 'auth/email-already-in-use') {
-          setEmailAlreadyInUse(true); // Set email already in use error
+          setEmailAlreadyInUse(true);
         } else {
           console.log(`Register Failed: ${error.message}`);
         }
-        setPasswordMismatch(false); // Reset password mismatch error
-        setEmailError(''); // Reset other email errors
+        setPasswordMismatch(false);
+        setEmailError('');
       });
 
-
     console.log(`Email: ${email}, Password: ${password}`);
-
   }
 
   return (
@@ -90,11 +87,11 @@ const RegisterPage = () => {
             value={email}
             onChangeText={text => {
               setEmail(text);
-              setEmailError(''); // Reset email error when typing
+              setEmailError('');
             }}
             style={[
               styles.input,
-              emailError && styles.inputError // Apply the error style when there's an email error
+              emailError && styles.inputError
             ]}
           />
           {emailError ? (

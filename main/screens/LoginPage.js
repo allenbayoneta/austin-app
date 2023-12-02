@@ -41,10 +41,10 @@ const LoginPage = () => {
   };
 
   return (
-    <KeyboardAvoidingView style={styles.container} behavior="height"           
-    onStartShouldSetResponder={() => Keyboard.dismiss()}
-  >
- 
+    <KeyboardAvoidingView style={styles.container} behavior="height"
+      onStartShouldSetResponder={() => Keyboard.dismiss()}
+    >
+
       <Image source={logo} style={styles.mainlogo} />
       <View style={styles.logoContainer}>
         <Text style={styles.textstyle}>
@@ -58,19 +58,19 @@ const LoginPage = () => {
           onChangeText={text => setEmail(text)}
           style={styles.input}
         />
-     <View style={styles.passwordContainer}>
-        <TextInput
-          placeholder="Password"
-          value={password}
-          onChangeText={text => setPassword(text)}
-          style={[styles.input, styles.passwordInput]} // Apply password-specific styling
-          secureTextEntry={passwordVisibility}
-          onKeyPress={handleKeyPress}
-        />
-        <TouchableOpacity onPress={togglePasswordVisibility} style={styles.eyeIcon}>
-          <Icon name={passwordVisibility ? "eye-slash" : "eye"} size={20} color="#000" />
-        </TouchableOpacity>
-      </View>
+        <View style={styles.passwordContainer}>
+          <TextInput
+            placeholder="Password"
+            value={password}
+            onChangeText={text => setPassword(text)}
+            style={[styles.input, styles.passwordInput]} // Apply password-specific styling
+            secureTextEntry={passwordVisibility}
+            onKeyPress={handleKeyPress}
+          />
+          <TouchableOpacity onPress={togglePasswordVisibility} style={styles.eyeIcon}>
+            <Icon name={passwordVisibility ? "eye-slash" : "eye"} size={20} color="#000" />
+          </TouchableOpacity>
+        </View>
         {loginError && (
           <Text style={styles.errorText}>{loginError}</Text>
         )}
@@ -121,7 +121,7 @@ const styles = StyleSheet.create({
     marginTop: 11,
   },
   passwordContainer: {
-    position: 'relative', 
+    position: 'relative',
   },
   errorText: {
     color: 'red',

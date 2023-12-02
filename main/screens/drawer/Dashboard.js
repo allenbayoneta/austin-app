@@ -5,7 +5,6 @@ import {
   Text, TextInput,
   Dimensions,
   ScrollView,
-  ActivityIndicator,
 } from "react-native";
 import { auth, storage } from "../../src/firebase";
 import AppStyles from "../../constants/AppStyles";
@@ -35,8 +34,8 @@ const DashboardPage = () => {
   const chartLabels = filteredTransactions.map((transaction) => transaction.date);
   const chartDataIncome = filteredTransactions.map((transaction) => parseFloat(transaction.type === "income" ? transaction.amount.replace(/,/g, '') : 0));
   const chartDataExpense = filteredTransactions.map((transaction) =>
-  parseFloat(transaction.type === "expense" ? transaction.amount.replace(/,/g, '') : 0)
-);
+    parseFloat(transaction.type === "expense" ? transaction.amount.replace(/,/g, '') : 0)
+  );
   const user = auth.currentUser;
   const file = 'dashboard'
 
@@ -129,7 +128,7 @@ const DashboardPage = () => {
   const goToNextPage = () => {
     setCurrentPage((page) => (page < pageCount ? page + 1 : page));
   };
-  
+
   const goToPreviousPage = () => {
     setCurrentPage((page) => (page > 1 ? page - 1 : page));
   };
@@ -159,6 +158,8 @@ const DashboardPage = () => {
       legendFontSize: 10,
     },
   ];
+
+
 
 
   const screenWidth = Dimensions.get('window').width;
@@ -258,43 +259,43 @@ const DashboardPage = () => {
               </View> */}
             </View>
             {Platform.OS === 'web' && (
-          <View style={styles.lineChartContainer}>
-            <Text style={styles.chartHeaderText}>Income vs Expense</Text>
-            <Picker
-              selectedValue={selectedMonths}
-              style={styles.pickerStyle}
-              onValueChange={(itemValue, itemIndex) => setSelectedMonths(itemValue)}>
-              <Picker.Item label="Last 6 months" value={6} />
-              <Picker.Item label="Last 12 months" value={12} />
-              {/* Add more options if needed */}
-            </Picker>
-            <ScrollView
-              horizontal
-              contentContainerStyle={{ paddingHorizontal: 16 }}
-              showsHorizontalScrollIndicator={false}>
-              <LineChart
-                data={{
-                  labels: chartLabels,
-                  datasets: [
-                    {
-                      data: chartDataIncome,
-                      color: (opacity = 1) => `rgba(26, 255, 146, ${opacity})`,
-                      strokeWidth: 2,
-                    },
-                    {
-                      data: chartDataExpense,
-                      color: (opacity = 1) => `rgba(255, 0, 0, ${opacity})`,
-                      strokeWidth: 2,
-                    },
-                  ],
-                }}
-                width={Dimensions.get('window').width * 0.9} // Adjust the width based on screen width
-                height={220} // Adjust the height as needed
-                chartConfig={chartConfig}
-              />
-            </ScrollView>
-          </View>
-        )}
+              <View style={styles.lineChartContainer}>
+                <Text style={styles.chartHeaderText}>Income vs Expense</Text>
+                <Picker
+                  selectedValue={selectedMonths}
+                  style={styles.pickerStyle}
+                  onValueChange={(itemValue, itemIndex) => setSelectedMonths(itemValue)}>
+                  <Picker.Item label="Last 6 months" value={6} />
+                  <Picker.Item label="Last 12 months" value={12} />
+                  {/* Add more options if needed */}
+                </Picker>
+                <ScrollView
+                  horizontal
+                  contentContainerStyle={{ paddingHorizontal: 16 }}
+                  showsHorizontalScrollIndicator={false}>
+                  <LineChart
+                    data={{
+                      labels: chartLabels,
+                      datasets: [
+                        {
+                          data: chartDataIncome,
+                          color: (opacity = 1) => `rgba(26, 255, 146, ${opacity})`,
+                          strokeWidth: 2,
+                        },
+                        {
+                          data: chartDataExpense,
+                          color: (opacity = 1) => `rgba(255, 0, 0, ${opacity})`,
+                          strokeWidth: 2,
+                        },
+                      ],
+                    }}
+                    width={Dimensions.get('window').width * 0.9} // Adjust the width based on screen width
+                    height={220} // Adjust the height as needed
+                    chartConfig={chartConfig}
+                  />
+                </ScrollView>
+              </View>
+            )}
             <View style={styles.Trow}>
               {csvFileExists && transactions.length > 0 && (
                 <View style={styles.tableContainer}>
@@ -653,7 +654,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 4,
     elevation: 5,
-    width: width < 600 ? '100%' : '100%' ,
+    width: width < 600 ? '100%' : '100%',
   },
   filterContainer: {
     // Adjust the styling according to your app's theme

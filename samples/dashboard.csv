@@ -1,0 +1,46 @@
+name,amount,type,date
+Salary,5000,income,2021-01-05
+Grocery Shopping,200,expense,2021-01-10
+Internet Bill,50,expense,2021-02-03
+Freelance Project,800,income,2021-02-15
+Dinner with Friends,30,expense,2021-03-02
+Gym Membership,80,expense,2021-03-15
+Stock Dividends,150,income,2021-04-01
+Electricity Bill,60,expense,2021-04-10
+Bonus,1000,income,2021-05-02
+Home Repairs,150,expense,2021-05-20
+Lunch Meeting,20,expense,2021-06-03
+Consulting Fee,500,income,2021-06-15
+Shopping Spree,300,expense,2021-07-01
+Investment Returns,200,income,2021-07-12
+Movie Night,15,expense,2021-08-05
+Web Development Project,700,income,2021-08-18
+Vacation Expenses,500,expense,2021-09-02
+Dividend Payout,120,income,2021-09-15
+Business Trip Reimbursement,1200,income,2021-10-08
+Online Course Fee,100,expense,2021-10-15
+Birthday Gift for Friend,25,expense,2021-11-02
+End-of-year Bonus,1000,income,2021-12-20
+Christmas Shopping,200,expense,2021-12-23
+Grocery Shopping,150,expense,2021-01-08
+Internet Bill,40,expense,2021-02-05
+Freelance Project,750,income,2021-02-18
+Dinner with Friends,35,expense,2021-03-05
+Gym Membership,80,expense,2021-03-20
+Stock Dividends,200,income,2021-04-05
+Electricity Bill,65,expense,2021-04-12
+Bonus,1100,income,2021-05-05
+Home Repairs,120,expense,2021-05-22
+Lunch Meeting,25,expense,2021-06-08
+Consulting Fee,600,income,2021-06-20
+Shopping Spree,250,expense,2021-07-05
+Investment Returns,250,income,2021-07-18
+Movie Night,20,expense,2021-08-08
+Web Development Project,800,income,2021-08-22
+Vacation Expenses,600,expense,2021-09-05
+Dividend Payout,150,income,2021-09-18
+Business Trip Reimbursement,1300,income,2021-10-12
+Online Course Fee,120,expense,2021-10-20
+Birthday Gift for Friend,30,expense,2021-11-08
+End-of-year Bonus,1200,income,2021-12-25
+Christmas Shopping,250,expense,2021-12-28

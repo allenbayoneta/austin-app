@@ -235,7 +235,7 @@ const ForecastPage = () => {
               <Text style={styles.headerText}>Last 12 Months</Text>
               <LineChart
                 data={chartData}
-                width={screenWidth - 70}
+                width={screenWidth - 120}
                 height={300}
                 chartConfig={chartConfig}
                 bezier
@@ -270,7 +270,7 @@ const ForecastPage = () => {
                   <Text style={styles.headerText}>Forecast of 6 months</Text>
                   <LineChart
                     data={forecastData}
-                    width={screenWidth - 100}
+                    width={screenWidth - 120}
                     height={300}
                     chartConfig={chartConfig}
                     bezier

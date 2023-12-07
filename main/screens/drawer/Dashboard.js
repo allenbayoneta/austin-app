@@ -17,6 +17,7 @@ import { ref, getDownloadURL } from "firebase/storage";
 import { Table, Row, Rows } from 'react-native-table-component';
 import { PieChart } from 'react-native-chart-kit';
 import { Picker } from '@react-native-picker/picker';
+import Constants from 'expo-constants';
 
 const DashboardPage = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -219,7 +220,7 @@ const DashboardPage = () => {
                   center={[10, 10]}
                 />
               </View>
-              <View style={height = 230}>
+              <View>
                 <View style={styles.FrowContainer}>
                   <Text style={styles.Header}>Total Income</Text>
                   <Text style={styles.total}>₱ {income}</Text>
@@ -230,45 +231,43 @@ const DashboardPage = () => {
                 </View>
               </View>
             </View>
-            {Platform.OS === 'web' && (
-              <View style={styles.lineChartContainer}>
-                <View style={styles.summaryHeader}>
-                  <Text style={styles.tableHeader}>Income vs Expense</Text>
-                  <Picker
-                    selectedValue={selectedMonths}
-                    style={[styles.pickerStyle, paddingVertical = 20]}
-                    onValueChange={(itemValue, itemIndex) => setSelectedMonths(itemValue)}>
-                    <Picker.Item label="Last 6 months" value={6} />
-                    <Picker.Item label="Last 12 months" value={12} />
-                  </Picker>
-                </View>
-                <ScrollView
-                  horizontal
-                  contentContainerStyle={{ paddingHorizontal: 16 }}
-                  showsHorizontalScrollIndicator={false}>
-                  <LineChart
-                    data={{
-                      labels: chartLabels,
-                      datasets: [
-                        {
-                          data: chartDataIncome,
-                          color: (opacity = 1) => `rgba(104, 66, 239, ${opacity})`,
-                          strokeWidth: 2,
-                        },
-                        {
-                          data: chartDataExpense,
-                          color: (opacity = 1) => `rgba(65, 114, 239, ${opacity})`,
-                          strokeWidth: 2,
-                        },
-                      ],
-                    }}
-                    width={Dimensions.get('window').width * 0.9}
-                    height={220}
-                    chartConfig={chartConfig}
-                  />
-                </ScrollView>
+            <View style={styles.lineChartContainer}>
+              <View style={styles.summaryHeader}>
+                <Text style={styles.tableHeader}>Income vs Expense</Text>
+                <Picker
+                  selectedValue={selectedMonths}
+                  style={styles.pickerStyle}
+                  onValueChange={(itemValue, itemIndex) => setSelectedMonths(itemValue)}>
+                  <Picker.Item label="Last 6 months" value={6} />
+                  <Picker.Item label="Last 12 months" value={12} />
+                </Picker>
               </View>
-            )}
+              <ScrollView
+                horizontal
+                contentContainerStyle={{ paddingHorizontal: 16 }}
+                showsHorizontalScrollIndicator={false}>
+                <LineChart
+                  data={{
+                    labels: chartLabels,
+                    datasets: [
+                      {
+                        data: chartDataIncome,
+                        color: (opacity = 1) => `rgba(104, 66, 239, ${opacity})`,
+                        strokeWidth: 2,
+                      },
+                      {
+                        data: chartDataExpense,
+                        color: (opacity = 1) => `rgba(65, 114, 239, ${opacity})`,
+                        strokeWidth: 2,
+                      },
+                    ],
+                  }}
+                  width={Dimensions.get('window').width * 0.9}
+                  height={220}
+                  chartConfig={chartConfig}
+                />
+              </ScrollView>
+            </View>
             <View style={styles.Trow}>
               {csvFileExists && transactions.length > 0 && (
                 <View style={styles.tableContainer}>

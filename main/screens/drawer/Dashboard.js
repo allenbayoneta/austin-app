@@ -17,6 +17,7 @@ import { ref, getDownloadURL } from "firebase/storage";
 import { Table, Row, Rows } from 'react-native-table-component';
 import { PieChart } from 'react-native-chart-kit';
 import { Picker } from '@react-native-picker/picker';
+import Constants from 'expo-constants';
 
 const DashboardPage = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -128,9 +129,9 @@ const DashboardPage = () => {
   };
 
   const chartConfig = {
-    backgroundGradientFrom: 'rgba(0, 0, 0, 0)',
-    backgroundGradientTo: 'rgba(0, 0, 0, 0)',
-    color: (opacity = 1) => `rgba(26, 255, 146, ${opacity})`,
+    backgroundGradientFrom: "#fff",
+    backgroundGradientTo: "#fff",
+    color: (opacity = 1) => `rgba(104,66,239, ${opacity})`,
     strokeWidth: 2,
     barPercentage: 0.5,
     useShadowColorFromDataset: false,
@@ -206,22 +207,12 @@ const DashboardPage = () => {
                 <Text style={styles.balText}>Current Balance</Text>
                 <Text style={styles.balance}>₱ {balance}</Text>
               </View>
-              <View style={styles.FrowContainer}>
-                <Text style={styles.Header}>Total Income</Text>
-                <Text style={styles.total}>₱ {income}</Text>
-              </View>
-              <View style={styles.FrowContainer}>
-                <Text style={styles.Header}>Total Expenses</Text>
-                <Text style={styles.total}>₱ {expense}</Text>
-              </View>
-            </View>
-            <View style={styles.Srow}>
               <View style={styles.pieContainer}>
                 <Text style={styles.chartHeaderText}>Sales Breakdown</Text>
                 <PieChart
                   data={data}
                   width={width < 600 ? width * 0.7 : width * 0.3}
-                  height={160}
+                  height={170}
                   chartConfig={chartConfig}
                   accessor={'amount'}
                   backgroundColor={'transparent'}
@@ -229,45 +220,54 @@ const DashboardPage = () => {
                   center={[10, 10]}
                 />
               </View>
+              <View>
+                <View style={styles.FrowContainer}>
+                  <Text style={styles.Header}>Total Income</Text>
+                  <Text style={styles.total}>₱ {income}</Text>
+                </View>
+                <View style={styles.FrowContainer}>
+                  <Text style={styles.Header}>Total Expenses</Text>
+                  <Text style={styles.total}>₱ {expense}</Text>
+                </View>
+              </View>
             </View>
-            {Platform.OS === 'web' && (
-              <View style={styles.lineChartContainer}>
-                <Text style={styles.chartHeaderText}>Income vs Expense</Text>
+            <View style={styles.lineChartContainer}>
+              <View style={styles.summaryHeader}>
+                <Text style={styles.tableHeader}>Income vs Expense</Text>
                 <Picker
                   selectedValue={selectedMonths}
                   style={styles.pickerStyle}
                   onValueChange={(itemValue, itemIndex) => setSelectedMonths(itemValue)}>
                   <Picker.Item label="Last 6 months" value={6} />
                   <Picker.Item label="Last 12 months" value={12} />
-                  {/* Add more options if needed */}
                 </Picker>
-                <ScrollView
-                  horizontal
-                  contentContainerStyle={{ paddingHorizontal: 16 }}
-                  showsHorizontalScrollIndicator={false}>
-                  <LineChart
-                    data={{
-                      labels: chartLabels,
-                      datasets: [
-                        {
-                          data: chartDataIncome,
-                          color: (opacity = 1) => `rgba(26, 255, 146, ${opacity})`,
-                          strokeWidth: 2,
-                        },
-                        {
-                          data: chartDataExpense,
-                          color: (opacity = 1) => `rgba(255, 0, 0, ${opacity})`,
-                          strokeWidth: 2,
-                        },
-                      ],
-                    }}
-                    width={Dimensions.get('window').width * 0.9}
-                    height={220}
-                    chartConfig={chartConfig}
-                  />
-                </ScrollView>
               </View>
-            )}
+              <ScrollView
+                horizontal
+                contentContainerStyle={{ paddingHorizontal: 16 }}
+                showsHorizontalScrollIndicator={false}>
+                <LineChart
+                  data={{
+                    labels: chartLabels,
+                    datasets: [
+                      {
+                        data: chartDataIncome,
+                        color: (opacity = 1) => `rgba(104, 66, 239, ${opacity})`,
+                        strokeWidth: 2,
+                      },
+                      {
+                        data: chartDataExpense,
+                        color: (opacity = 1) => `rgba(65, 114, 239, ${opacity})`,
+                        strokeWidth: 2,
+                      },
+                    ],
+                  }}
+                  width={Dimensions.get('window').width * 0.9}
+                  height={220}
+                  chartConfig={chartConfig}
+                />
+              </ScrollView>
+            </View>
             <View style={styles.Trow}>
               {csvFileExists && transactions.length > 0 && (
                 <View style={styles.tableContainer}>
@@ -490,13 +490,13 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
     alignItems: 'center',
     justifyContent: 'center',
-    width: "90%",
+    width: "100%",
     alignSelf: 'center',
     marginVertical: 10,
   },
   FrowBalContainer: {
     marginHorizontal: 5,
-    padding: 20,
+    padding: 35,
     flexDirection: 'column',
     justifyContent: 'space-evenly',
     borderWidth: 1,
@@ -511,13 +511,14 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 4,
     elevation: 5,
-    width: width < 600 ? '90%' : width * 0.20,
-    height: 120,
+    width: width < 600 ? '90%' : width * 0.30,
+    height: 230,
     marginBottom: 10,
   },
   FrowContainer: {
     marginHorizontal: 5,
-    padding: 20,
+    paddingHorizontal: 20,
+    paddingVertical: 17,
     borderWidth: 1,
     borderRadius: 20,
     shadowColor: "#000",
@@ -532,20 +533,19 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 4,
     elevation: 5,
-    width: width < 600 ? '90%' : width * 0.20,
-    height: 120,
+    width: width < 600 ? '90%' : width * 0.24,
     marginBottom: 10,
   },
   pieContainer: {
-    margin: 5,
+    marginHorizontal: 5,
     padding: 20,
-    borderWidth: 1,
-    borderRadius: 20,
-    shadowColor: "#000",
     flexDirection: 'column',
     justifyContent: 'space-evenly',
+    borderWidth: 1,
+    borderRadius: 20,
     backgroundColor: AppStyles.color.primary,
     borderColor: AppStyles.color.primary,
+    shadowColor: "#000",
     shadowOffset: {
       width: 0,
       height: 2,
@@ -554,14 +554,16 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 5,
     width: width < 600 ? '90%' : width * 0.30,
+    height: 230,
+    marginBottom: 10,
   },
   balText: {
-    fontSize: 24,
+    fontSize: 32,
     fontWeight: 'bold',
     color: 'white',
   },
   balance: {
-    fontSize: 32,
+    fontSize: 40,
     fontWeight: 'bold',
     color: 'white',
   },
@@ -596,7 +598,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    width: "100%",
+    width: "90%",
     alignSelf: 'center',
     marginVertical: 20,
   },
@@ -611,6 +613,7 @@ const styles = StyleSheet.create({
     padding: 20,
     borderWidth: 1,
     borderRadius: 20,
+    alignSelf: 'center',
     shadowColor: "#000",
     flexDirection: 'column',
     justifyContent: 'space-evenly',
@@ -623,7 +626,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 4,
     elevation: 5,
-    width: width < 600 ? '100%' : '100%',
+    width: width < 600 ? '90%' : '90%',
   },
   filterContainer: {
     borderWidth: 1,

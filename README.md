@@ -11,6 +11,8 @@ An application enabling entrepreneurs to seamlessly monitor business sales and e
 * Charles Feria
 * James Ronquillo
 ## How to use
+### Web App
+Visit https://nokap-austin.web.app/
 ### Mobile App
 1. Download `.apk` file from releases.
 2. Install in an Android phone or emulator.
@@ -24,5 +26,5 @@ An application enabling entrepreneurs to seamlessly monitor business sales and e
 Visit [Forecast API](https://allenbayonetea.pythonanywhere.com/) to check if forecast server is availble.
 ## Frameworks used
 * [Expo](https://expo.dev/) - Frontend
-* [Firebase](https://firebase.google.com/) - Backend Authentication and Storage
+* [Firebase](https://firebase.google.com/) - Backend Authentication and Storage, Web App Hosting
 * [Flask](https://flask.palletsprojects.com/en/3.0.x/) - Forecast API hosted through [PythonAnywhere](https://www.pythonanywhere.com/)
